@@ -4,14 +4,16 @@ class InternalEncodingIter {
 
 	public var string : String;
 	public var index : Int;
+	public var endIndex : Int;
 
-	public function new(s : String, i : Int) {
+	public function new(s : String, beginIndex : Int, endIndex : Int) {
 		string = s;
-		index = i;
+		this.index = beginIndex;
+		this.endIndex = endIndex;
 	}
 
 	public inline function hasNext() : Bool {
-		return index < string.length;
+		return index < endIndex;
 	}
 
 	public inline function next() : Int {

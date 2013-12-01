@@ -32,11 +32,11 @@ class InternalEncoding {
 	#end
 	}
 
-	public static function codePointCount(s : String) : Int {
+	public static function codePointCount(s : String, beginIndex : Int, endIndex : Int) : Int {
 	#if (neko || php || cpp || macro)
-		return haxe.Utf8.length(s);
+		return haxe.Utf8.length(s.substring(beginIndex, endIndex));
 	#else
-		var itr = new InternalEncodingIter(s, 0);
+		var itr = new InternalEncodingIter(s, beginIndex, endIndex);
 		var i = 0;
 		while (itr.hasNext()) {
 			itr.next();
@@ -60,9 +60,9 @@ class InternalEncoding {
 	}
 
 	public static inline function offsetByCodePoints(s : String, index : Int, codePointOffset : Int) : Int {
-		var itr = new InternalEncodingIter(s, index);
+		var itr = new InternalEncodingIter(s, index, s.length);
 		var i = 0;
-		while (i < codePointOffset) {
+		while (i < codePointOffset && itr.hasNext()) {
 			itr.next();
 			++i;
 		}

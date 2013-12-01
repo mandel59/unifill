@@ -3,7 +3,7 @@ package unifill;
 class Unifill {
 
 	public static inline function uLength(s : String) : Int
-		return InternalEncoding.codePointCount(s);
+		return InternalEncoding.codePointCount(s, 0, s.length);
 
 	public static inline function uCharAt(s : String, index : Int) : String
 		return uCodePointAt(s, index).toString();
