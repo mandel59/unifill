@@ -4,8 +4,6 @@ class Unicode {
 
 	public static inline var minCodePoint : CodePoint = cast 0x0000;
 	public static inline var maxCodePoint : CodePoint = cast 0x10FFFF;
-	public static inline var minBMP : CodePoint = cast 0x0000;
-	public static inline var maxBMP : CodePoint = cast 0xFFFF;
 	public static inline var minHighSurrogate : CodePoint = cast 0xD800;
 	public static inline var maxHighSurrogate : CodePoint = cast 0xDBFF;
 	public static inline var minLowSurrogate : CodePoint = cast 0xDC00;
