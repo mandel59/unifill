@@ -78,7 +78,7 @@ class InternalEncoding {
 	#else
 		var buf = new StringBuf();
 		for (c in codePoints) {
-			if (c <= 0x10000) {
+			if (c < 0x10000) {
 				buf.addChar(c);
 			}
 			else {
