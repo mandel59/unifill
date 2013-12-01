@@ -47,6 +47,17 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals(1, "𩸽あëa".uIndexOf("あ", 1));
 	}
 
+	public function test_Unifill_uLastIndexOf() {
+		assertEquals(0, "𩸽あëa".uLastIndexOf("𩸽"));
+		assertEquals(1, "𩸽あëa".uLastIndexOf("あ"));
+		assertEquals(2, "𩸽あëa".uLastIndexOf("ë"));
+		assertEquals(3, "𩸽あëa".uLastIndexOf("a"));
+		assertEquals(-1, "𩸽あëa".uLastIndexOf("z"));
+		assertEquals(0, "𩸽あëa".uLastIndexOf("𩸽", 1));
+		assertEquals(1, "𩸽あëa".uLastIndexOf("あ", 1));
+		assertEquals(-1, "𩸽あëa".uLastIndexOf("ë", 1));
+	}
+
 	public function test_Unifill_uToString() {
 		//assertEquals("𩸽あëa", (cast [0x29E3D, 0x03042, 0x000EB, 0x00061] : Array<CodePoint>).uToString());
 		assertEquals("𩸽あëa", [cast 0x29E3D, cast 0x03042, cast 0x000EB, cast 0x00061].uToString());

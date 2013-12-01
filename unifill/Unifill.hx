@@ -22,6 +22,14 @@ class Unifill {
 		return (index >= 0) ? InternalEncoding.codePointCount(s, 0, index) : -1;
 	}
 
+	public static inline function uLastIndexOf(s : String, value : String, ?startIndex) : Int {
+		if (startIndex == null)
+			startIndex = s.length - 1;
+		var index = s.lastIndexOf(value, InternalEncoding.offsetByCodePoints(s, 0, startIndex));
+		return (index >= 0) ? InternalEncoding.codePointCount(s, 0, index) : -1;
+	}
+
+
 	public static inline function uToString(codePoints : Iterable<CodePoint>) : String
 		return InternalEncoding.newStringFromCodePoints(cast codePoints);
 
