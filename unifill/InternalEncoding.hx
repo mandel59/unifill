@@ -8,9 +8,20 @@ class InternalEncoding {
 		return EncodingForm.UTF16;
 	#end
 
+	public static inline function charCodeAt(s : String, index : Int) : Int {
+	#if java
+		var c = s.charCodeAt(index);
+		return (c < 0x10000) ? c : Surrogate.encodeHighSurrogate(c);
+	#else
+		return s.charCodeAt(index);
+	#end
+	}
+
 	public static inline function codePointAt(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
 		return haxe.Utf8.charCodeAt(s.substr(index, 4), 0);
+	#elseif java
+		return s.charCodeAt(index);
 	#else
 		var hi = s.charCodeAt(index);
 		if (Surrogate.isHighSurrogate(hi)) {
@@ -35,6 +46,19 @@ class InternalEncoding {
 	#end
 	}
 
+	public static inline function codePointWidthAt(s : String, index : Int) : Int {
+	#if (neko || php || cpp || macro)
+		var c = s.charCodeAt(index);
+		return (c < 0x80) ? 1 : (c < 0xc0) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : (c < 0xF8) ? 4 : (c < 0xFC) ? 5 : (c < 0xFE) ? 6 : 1;
+	#elseif java
+		var c = s.charCodeAt(index);
+		return (c < 0x10000) ? 1 : 2;
+	#else
+		var c = s.charCodeAt(index);
+		return (!Surrogate.isHighSurrogate(c)) ? 1 : 2;
+	#end
+	}
+
 	public static inline function offsetByCodePoints(s : String, index : Int, codePointOffset : Int) : Int {
 		var itr = new InternalEncodingIter(s, index);
 		var i = 0;
@@ -54,7 +78,7 @@ class InternalEncoding {
 	#else
 		var buf = new StringBuf();
 		for (c in codePoints) {
-			if ((cast c : CodePoint) <= Unicode.maxBMP) {
+			if (c <= 0x10000) {
 				buf.addChar(c);
 			}
 			else {
@@ -65,5 +89,6 @@ class InternalEncoding {
 		return buf.toString();
 	#end
 	}
+
 }
 
