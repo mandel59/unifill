@@ -1,0 +1,11 @@
+{
+    "name": "unifill",
+    "url": "https://github.com/mandel59/unifill",
+    "license": "MIT",
+    "tags": ["cross", "unicode", "string"],
+    "description": "Library for Unicode string support",
+    "version": "0.0.1",
+    "releasenote": "Initial release",
+    "contributors": ["mandel59"],
+    "dependencies": {}
+}

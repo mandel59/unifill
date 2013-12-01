@@ -1,0 +1,31 @@
+-main test.Main
+--interp
+
+--next
+
+-main test.Main
+-neko test/test.n
+-cmd neko test/test.n
+
+--next
+
+-main test.Main
+-php test/test_php
+-cmd php test/test_php/index.php
+
+--next
+
+-main test.Main
+-js test/test.js
+-cmd node test/test.js
+
+--next
+
+-main test.Main
+-swf test/test.swf
+
+--next
+
+-main test.Main
+-java test/test_java
+-cmd java -jar test/test_java/test_java.jar
