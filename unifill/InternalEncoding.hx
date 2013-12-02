@@ -8,24 +8,17 @@ class InternalEncoding {
 		return EncodingForm.UTF16;
 	#end
 
-	public static inline function charCodeAt(s : String, index : Int) : Int {
-	#if java
-		var c = s.charCodeAt(index);
-		return (c < 0x10000) ? c : Surrogate.encodeHighSurrogate(c);
-	#else
-		return s.charCodeAt(index);
-	#end
+	public static inline function codeUnitAt(s : String, index : Int) : Int {
+		return StringTools.fastCodeAt(s, index);
 	}
 
 	public static inline function codePointAt(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
 		return haxe.Utf8.charCodeAt(s.substr(index, 4), 0);
-	#elseif java
-		return s.charCodeAt(index);
 	#else
-		var hi = s.charCodeAt(index);
+		var hi = codeUnitAt(s, index);
 		if (Surrogate.isHighSurrogate(hi)) {
-			var lo = s.charCodeAt(index + 1);
+			var lo = codeUnitAt(s, index + 1);
 			return Surrogate.decodeSurrogate(hi, lo);
 		}
 		return hi;
@@ -48,13 +41,10 @@ class InternalEncoding {
 
 	public static inline function codePointWidthAt(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
-		var c = s.charCodeAt(index);
+		var c = codeUnitAt(s, index);
 		return (c < 0x80) ? 1 : (c < 0xc0) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : (c < 0xF8) ? 4 : (c < 0xFC) ? 5 : (c < 0xFE) ? 6 : 1;
-	#elseif java
-		var c = s.charCodeAt(index);
-		return (c < 0x10000) ? 1 : 2;
 	#else
-		var c = s.charCodeAt(index);
+		var c = codeUnitAt(s, index);
 		return (!Surrogate.isHighSurrogate(c)) ? 1 : 2;
 	#end
 	}
