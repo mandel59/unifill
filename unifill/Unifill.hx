@@ -29,6 +29,11 @@ class Unifill {
 		return (index >= 0) ? InternalEncoding.codePointCount(s, 0, index) : -1;
 	}
 
+	public static inline function uSubstring(s : String, startIndex : Int, ?endIndex : Int) : String {
+		var si = (startIndex < 0) ? 0 : InternalEncoding.offsetByCodePoints(s, 0, startIndex);
+		var ei = (endIndex == null) ? s.length : (endIndex < 0) ? 0 : InternalEncoding.offsetByCodePoints(s, 0, endIndex);
+		return s.substring(si, ei);
+	}
 
 	public static inline function uToString(codePoints : Iterable<CodePoint>) : String
 		return InternalEncoding.newStringFromCodePoints(cast codePoints);
