@@ -58,6 +58,15 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals(-1, "𩸽あëa".uLastIndexOf("ë", 1));
 	}
 
+	public function test_Unifill_uSubstr() {
+		assertEquals("𩸽", "𩸽あëa".uSubstr(0, 1));
+		assertEquals("ë", "𩸽あëa".uSubstr(2, 1));
+		assertEquals("a", "𩸽あëa".uSubstr(-1, 3));
+		assertEquals("あë", "𩸽あëa".uSubstr(-3, 2));
+		assertEquals("ëa", "𩸽あëa".uSubstr(2));
+		assertEquals("", "𩸽あëa".uSubstr(4));
+	}
+
 	public function test_Unifill_uSubstring() {
 		assertEquals("𩸽", "𩸽あëa".uSubstring(0, 1));
 		assertEquals("あ", "𩸽あëa".uSubstring(2, 1));
