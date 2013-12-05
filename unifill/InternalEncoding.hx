@@ -42,7 +42,7 @@ class InternalEncoding {
 	public static inline function codePointWidthAt(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
 		var c = codeUnitAt(s, index);
-		return (c < 0x80) ? 1 : (c < 0xC0) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : (c < 0xF8) ? 4 : (c < 0xFC) ? 5 : (c < 0xFE) ? 6 : 1;
+		return (c < 0xC0) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : (c < 0xF8) ? 4 : 1;
 	#else
 		var c = codeUnitAt(s, index);
 		return (!Surrogate.isHighSurrogate(c)) ? 1 : 2;
@@ -51,13 +51,11 @@ class InternalEncoding {
 
 	public static inline function codePointWidthBefore(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
-		return (codeUnitAt(s, index - 1) < 0x80) ? 1
-			: (codeUnitAt(s, index - 1) >= 0xC0) ? 1
+		var c1 = codeUnitAt(s, index - 1);
+		return (c1 < 0x80 || c1 >= 0xC0) ? 1
 			: (codeUnitAt(s, index - 2) & 0xE0 == 0xC0) ? 2
 			: (codeUnitAt(s, index - 3) & 0xF0 == 0xE0) ? 3
 			: (codeUnitAt(s, index - 4) & 0xF8 == 0xF0) ? 4
-			: (codeUnitAt(s, index - 5) & 0xFC == 0xF8) ? 5
-			: (codeUnitAt(s, index - 6) & 0xFE == 0xFC) ? 6
 			: 1;
 	#else
 		var c = codeUnitAt(s, index - 1);
