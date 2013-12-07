@@ -14,7 +14,7 @@ class InternalEncoding {
 
 	public static inline function codePointAt(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
-		return haxe.Utf8.charCodeAt(s.substr(index, 4), 0);
+		return haxe.Utf8.charCodeAt(s.substr(index, codePointWidthAt(s, index)), 0);
 	#else
 		var hi = codeUnitAt(s, index);
 		if (Surrogate.isHighSurrogate(hi)) {
