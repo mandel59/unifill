@@ -41,6 +41,14 @@ class Unifill {
 		return s.substring(si, ei);
 	}
 
+	public static inline function uIterator(s : String) : Iterator<CodePoint> {
+		var itr = new InternalEncodingIter(s, 0, s.length);
+		return {
+			hasNext: itr.hasNext,
+			next: function() return cast InternalEncoding.codePointAt(s, itr.next())
+		};
+	}
+
 	public static inline function uToString(codePoints : Iterable<CodePoint>) : String
 		return InternalEncoding.newStringFromCodePoints(cast codePoints);
 

@@ -75,9 +75,23 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals("", "𩸽あëa".uSubstring(4));
 	}
 
+	public function test_Unifill_uIterator() {
+		var itr = "𩸽あëa".uIterator();
+		assertEquals(true, itr.hasNext());
+		assertEquals(cast 0x29E3D, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(cast 0x03042, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(cast 0x000EB, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(cast 0x00061, itr.next());
+		assertEquals(false, itr.hasNext());
+	}
+
 	public function test_Unifill_uToString() {
 		//assertEquals("𩸽あëa", (cast [0x29E3D, 0x03042, 0x000EB, 0x00061] : Array<CodePoint>).uToString());
 		assertEquals("𩸽あëa", [cast 0x29E3D, cast 0x03042, cast 0x000EB, cast 0x00061].uToString());
+		assertEquals("𩸽あëa", {iterator: "𩸽あëa".uIterator}.uToString());
 	}
 
 }
