@@ -111,7 +111,7 @@ class InternalEncoding {
 	#end
 	}
 
-	public static inline function newStringFromCodePoints(codePoints : Iterable<Int>) : String {
+	public static inline function fromCodePoints(codePoints : Iterable<Int>) : String {
 	#if (neko || php || cpp || macro)
 		var buf = new haxe.Utf8();
 		for (c in codePoints)

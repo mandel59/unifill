@@ -63,6 +63,6 @@ class Unifill {
 	}
 
 	public static inline function uToString(codePoints : Iterable<CodePoint>) : String
-		return InternalEncoding.newStringFromCodePoints(cast codePoints);
+		return InternalEncoding.fromCodePoints(cast codePoints);
 
 }

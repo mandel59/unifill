@@ -48,8 +48,15 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals(0x29E3D, Unicode.decodeSurrogate(0xD867, 0xDE3D));
 	}
 
-	public function test_InternalEncoding_newStringFromCodePoints() {
-		assertEquals("𩸽あëa", InternalEncoding.newStringFromCodePoints([0x29E3D, 0x03042, 0x000EB, 0x00061]));
+	public function test_InternalEncoding_fromCodePoint() {
+		assertEquals("𩸽", InternalEncoding.fromCodePoint(0x29E3D));
+		assertEquals("あ", InternalEncoding.fromCodePoint(0x03042));
+		assertEquals("ë", InternalEncoding.fromCodePoint(0x000EB));
+		assertEquals("a", InternalEncoding.fromCodePoint(0x00061));
+	}
+
+	public function test_InternalEncoding_fromCodePoints() {
+		assertEquals("𩸽あëa", InternalEncoding.fromCodePoints([0x29E3D, 0x03042, 0x000EB, 0x00061]));
 	}
 
 	public function test_Unifill_uLength() {
