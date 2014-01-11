@@ -91,6 +91,14 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals(-1, "𩸽あëa".uLastIndexOf("ë", 1));
 	}
 
+	public function test_Unifill_uSplit() {
+		assertEquals("𩸽,あ,ë,a", "𩸽あëa".uSplit("").join(","));
+		assertEquals(",あ,ë,a,,", "𩸽あ𩸽ë𩸽a𩸽𩸽".uSplit("𩸽").join(","));
+		assertEquals(",𩸽,ë,a,,", "あ𩸽あëあaああ".uSplit("あ").join(","));
+		assertEquals(",𩸽,あ,a,,", "ë𩸽ëあëaëë".uSplit("ë").join(","));
+		assertEquals(",𩸽,あ,ë,,", "a𩸽aあaëaa".uSplit("a").join(","));
+	}
+
 	public function test_Unifill_uSubstr() {
 		assertEquals("𩸽", "𩸽あëa".uSubstr(0, 1));
 		assertEquals("ë", "𩸽あëa".uSubstr(2, 1));

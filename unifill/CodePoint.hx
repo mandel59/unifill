@@ -28,7 +28,7 @@ abstract CodePoint(Int) {
 	}
 
 	public inline function toString() : String
-		return InternalEncoding.newStringFromCodePoints([(cast this : Int)]);
+		return InternalEncoding.fromCodePoint(this);
 
 	public inline function toInt() : Int
 		return cast this;

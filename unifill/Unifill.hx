@@ -5,8 +5,14 @@ class Unifill {
 	public static inline function uLength(s : String) : Int
 		return InternalEncoding.codePointCount(s, 0, s.length);
 
-	public static inline function uCharAt(s : String, index : Int) : String
-		return uCodePointAt(s, index).toString();
+	public static inline function uCharAt(s : String, index : Int) : String {
+	#if (neko || php || cpp || macro)
+		return InternalEncoding.fromCodePoint(haxe.Utf8.charCodeAt(s, index));
+	#else
+		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
+		return InternalEncoding.codePointStringAt(s, i);
+	#end
+	}
 
 	public static inline function uCodePointAt(s : String, index : Int) : CodePoint {
 	#if (neko || php || cpp || macro)
@@ -27,6 +33,13 @@ class Unifill {
 			startIndex = s.length - 1;
 		var index = s.lastIndexOf(value, InternalEncoding.offsetByCodePoints(s, 0, startIndex));
 		return (index >= 0) ? InternalEncoding.codePointCount(s, 0, index) : -1;
+	}
+
+	public static inline function uSplit(s : String, delimiter : String) : Array<String> {
+		if (delimiter.length == 0) {
+			return [for (c in uIterator(s)) InternalEncoding.fromCodePoint(cast c)];
+		}
+		return s.split(delimiter);
 	}
 
 	public static inline function uSubstr(s : String, startIndex : Int, ?length : Int) : String {

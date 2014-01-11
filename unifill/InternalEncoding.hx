@@ -25,6 +25,19 @@ class InternalEncoding {
 	#end
 	}
 
+	public static inline function codePointStringAt(s : String, index : Int) : String {
+	#if (neko || php || cpp || macro)
+		return s.substr(index, codePointWidthAt(s, index));
+	#else
+		var hi = codeUnitAt(s, index);
+		if (Unicode.isHighSurrogate(hi)) {
+			var lo = codeUnitAt(s, index + 1);
+			return String.fromCharCode(hi) + String.fromCharCode(lo);
+		}
+		return String.fromCharCode(hi);
+	#end
+	}
+
 	public static function codePointCount(s : String, beginIndex : Int, endIndex : Int) : Int {
 	#if (neko || php || cpp || macro)
 		return haxe.Utf8.length(s.substring(beginIndex, endIndex));
@@ -81,6 +94,21 @@ class InternalEncoding {
 			++i;
 		}
 		return itr.index;
+	}
+
+	public static inline function fromCodePoint(code : Int) : String {
+	#if (neko || php || cpp || macro)
+		var buf = new haxe.Utf8();
+		buf.addChar(code);
+		return buf.toString();
+	#else
+		if (code < 0x10000) {
+			return String.fromCharCode(code);
+		}
+		var hi = Unicode.encodeHighSurrogate(code);
+		var lo = Unicode.encodeLowSurrogate(code);
+		return String.fromCharCode(hi) + String.fromCharCode(lo);
+	#end
 	}
 
 	public static inline function newStringFromCodePoints(codePoints : Iterable<Int>) : String {
