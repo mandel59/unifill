@@ -10,8 +10,8 @@ using unifill.Unifill;
 class TestUnifill extends haxe.unit.TestCase {
 
 	public function test_Surrogate_decodeSurrogate() {
-		assertEquals(0x10000, Surrogate.decodeSurrogate(cast Unicode.minHighSurrogate, cast Unicode.minLowSurrogate));
-		assertEquals(0x10FFFF, Surrogate.decodeSurrogate(cast Unicode.maxHighSurrogate, cast Unicode.maxLowSurrogate));
+		assertEquals(0x10000, Surrogate.decodeSurrogate(Unicode.minHighSurrogate, Unicode.minLowSurrogate));
+		assertEquals(0x10FFFF, Surrogate.decodeSurrogate(Unicode.maxHighSurrogate, Unicode.maxLowSurrogate));
 		assertEquals(0x29E3D, Surrogate.decodeSurrogate(0xD867, 0xDE3D));
 	}
 

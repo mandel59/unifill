@@ -12,13 +12,11 @@ class Surrogate {
 		return (c & 0x3FF) | 0xDC00;
 
 	public static inline function isHighSurrogate(code : Int) : Bool {
-		var c : CodePoint = cast code;
-		return Unicode.minHighSurrogate <= c && c <= Unicode.maxHighSurrogate;
+		return Unicode.minHighSurrogate <= code && code <= Unicode.maxHighSurrogate;
 	}
 
 	public static inline function isLowSurrogate(code : Int) : Bool {
-		var c : CodePoint = cast code;
-		return Unicode.minLowSurrogate <= c && c <= Unicode.maxLowSurrogate;
+		return Unicode.minLowSurrogate <= code && code <= Unicode.maxLowSurrogate;
 	}
 
 }
