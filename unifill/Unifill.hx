@@ -10,7 +10,7 @@ class Unifill {
 		return InternalEncoding.fromCodePoint(haxe.Utf8.charCodeAt(s, index));
 	#else
 		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
-		return InternalEncoding.codePointStringAt(s, i);
+		return InternalEncoding.charAt(s, i);
 	#end
 	}
 

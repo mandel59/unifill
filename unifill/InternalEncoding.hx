@@ -25,7 +25,7 @@ class InternalEncoding {
 	#end
 	}
 
-	public static inline function codePointStringAt(s : String, index : Int) : String {
+	public static inline function charAt(s : String, index : Int) : String {
 	#if (neko || php || cpp || macro)
 		return s.substr(index, codePointWidthAt(s, index));
 	#else
