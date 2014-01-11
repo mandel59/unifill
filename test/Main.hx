@@ -3,10 +3,38 @@ package test;
 import unifill.CodePoint;
 import unifill.InternalEncoding;
 import unifill.Unicode;
+import unifill.Exception;
 
 using unifill.Unifill;
 
 class TestUnifill extends haxe.unit.TestCase {
+
+	public function test_CodePoint() {
+		assertTrue(Unicode.isCodePoint(Unicode.minCodePoint));
+		assertTrue(Unicode.isCodePoint(Unicode.maxCodePoint));
+		assertFalse(Unicode.isCodePoint(Unicode.minCodePoint - 1));
+		assertFalse(Unicode.isCodePoint(Unicode.maxCodePoint + 1));
+		assertEquals(cast Unicode.minCodePoint, CodePoint.fromInt(Unicode.minCodePoint));
+		assertEquals(cast Unicode.maxCodePoint, CodePoint.fromInt(Unicode.maxCodePoint));
+		assertTrue(try {
+				CodePoint.fromInt(Unicode.minCodePoint - 1);
+				false;
+			} catch(e : Exception) {
+				switch (e) {
+					case InvalidCodePoint(c) if (c == Unicode.minCodePoint - 1): true;
+					default: false;
+				}
+			});
+		assertTrue(try {
+				CodePoint.fromInt(Unicode.maxCodePoint + 1);
+				false;
+			} catch(e : Exception) {
+				switch (e) {
+					case InvalidCodePoint(c) if (c == Unicode.maxCodePoint + 1): true;
+					default: false;
+				}
+			});
+	}
 
 	public function test_Unicode_decodeSurrogate() {
 		assertEquals(0x10000, Unicode.decodeSurrogate(Unicode.minHighSurrogate, Unicode.minLowSurrogate));

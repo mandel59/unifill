@@ -18,6 +18,10 @@ class Unicode {
 	public static inline function encodeLowSurrogate(c : Int) : Int
 		return (c & 0x3FF) | 0xDC00;
 
+	public static inline function isCodePoint(code : Int) : Bool {
+		return minCodePoint <= code && code <= maxCodePoint;
+	}
+
 	public static inline function isHighSurrogate(code : Int) : Bool {
 		return minHighSurrogate <= code && code <= maxHighSurrogate;
 	}
