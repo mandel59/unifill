@@ -4,6 +4,7 @@ import unifill.CodePoint;
 import unifill.InternalEncoding;
 import unifill.Unicode;
 import unifill.Exception;
+import unifill.UnicodeString;
 
 using unifill.Unifill;
 
@@ -140,6 +141,10 @@ class TestUnifill extends haxe.unit.TestCase {
 		//assertEquals("𩸽あëa", (cast [0x29E3D, 0x03042, 0x000EB, 0x00061] : Array<CodePoint>).uToString());
 		assertEquals("𩸽あëa", [cast 0x29E3D, cast 0x03042, cast 0x000EB, cast 0x00061].uToString());
 		assertEquals("𩸽あëa", {iterator: "𩸽あëa".uIterator}.uToString());
+	}
+
+	public function test_UnicodeString_length() {
+		assertEquals(4, new UnicodeString("𩸽あëa").length);
 	}
 
 }
