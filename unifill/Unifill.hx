@@ -37,7 +37,7 @@ class Unifill {
 
 	public static inline function uSplit(s : String, delimiter : String) : Array<String> {
 		if (delimiter.length == 0) {
-			return [for (c in uIterator(s)) InternalEncoding.fromCodePoint(cast c)];
+			return [for (i in new InternalEncodingIter(s, 0, s.length)) InternalEncoding.charAt(s, i)];
 		}
 		return s.split(delimiter);
 	}
