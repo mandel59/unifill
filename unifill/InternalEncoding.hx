@@ -26,16 +26,7 @@ class InternalEncoding {
 	}
 
 	public static inline function charAt(s : String, index : Int) : String {
-	#if (neko || php || cpp || macro)
 		return s.substr(index, codePointWidthAt(s, index));
-	#else
-		var hi = codeUnitAt(s, index);
-		if (Unicode.isHighSurrogate(hi)) {
-			var lo = codeUnitAt(s, index + 1);
-			return String.fromCharCode(hi) + String.fromCharCode(lo);
-		}
-		return String.fromCharCode(hi);
-	#end
 	}
 
 	public static function codePointCount(s : String, beginIndex : Int, endIndex : Int) : Int {
