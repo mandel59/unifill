@@ -16,6 +16,7 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertFalse(Unicode.isCodePoint(Unicode.maxCodePoint + 1));
 		assertEquals(cast Unicode.minCodePoint, CodePoint.fromInt(Unicode.minCodePoint));
 		assertEquals(cast Unicode.maxCodePoint, CodePoint.fromInt(Unicode.maxCodePoint));
+		#if !flash
 		assertTrue(try {
 				CodePoint.fromInt(Unicode.minCodePoint - 1);
 				false;
@@ -34,6 +35,7 @@ class TestUnifill extends haxe.unit.TestCase {
 					default: false;
 				}
 			});
+		#end
 	}
 
 	public function test_Unicode_decodeSurrogate() {
