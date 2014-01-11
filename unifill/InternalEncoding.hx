@@ -1,7 +1,9 @@
 package unifill;
 
 class InternalEncoding {
-	public static inline function internalEncoding() : Encoding
+	public static var internalEncoding(get, never) : Encoding;
+
+	static inline function get_internalEncoding() : Encoding
 	#if (neko || php || cpp || macro)
 		return Encoding.UTF8;
 	#else
