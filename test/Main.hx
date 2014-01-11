@@ -2,17 +2,16 @@ package test;
 
 import unifill.CodePoint;
 import unifill.InternalEncoding;
-import unifill.Surrogate;
 import unifill.Unicode;
 
 using unifill.Unifill;
 
 class TestUnifill extends haxe.unit.TestCase {
 
-	public function test_Surrogate_decodeSurrogate() {
-		assertEquals(0x10000, Surrogate.decodeSurrogate(Unicode.minHighSurrogate, Unicode.minLowSurrogate));
-		assertEquals(0x10FFFF, Surrogate.decodeSurrogate(Unicode.maxHighSurrogate, Unicode.maxLowSurrogate));
-		assertEquals(0x29E3D, Surrogate.decodeSurrogate(0xD867, 0xDE3D));
+	public function test_Unicode_decodeSurrogate() {
+		assertEquals(0x10000, Unicode.decodeSurrogate(Unicode.minHighSurrogate, Unicode.minLowSurrogate));
+		assertEquals(0x10FFFF, Unicode.decodeSurrogate(Unicode.maxHighSurrogate, Unicode.maxLowSurrogate));
+		assertEquals(0x29E3D, Unicode.decodeSurrogate(0xD867, 0xDE3D));
 	}
 
 	public function test_InternalEncoding_newStringFromCodePoints() {

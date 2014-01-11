@@ -17,9 +17,9 @@ class InternalEncoding {
 		return haxe.Utf8.charCodeAt(s.substr(index, codePointWidthAt(s, index)), 0);
 	#else
 		var hi = codeUnitAt(s, index);
-		if (Surrogate.isHighSurrogate(hi)) {
+		if (Unicode.isHighSurrogate(hi)) {
 			var lo = codeUnitAt(s, index + 1);
-			return Surrogate.decodeSurrogate(hi, lo);
+			return Unicode.decodeSurrogate(hi, lo);
 		}
 		return hi;
 	#end
@@ -45,7 +45,7 @@ class InternalEncoding {
 		return (c < 0xC0) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : (c < 0xF8) ? 4 : 1;
 	#else
 		var c = codeUnitAt(s, index);
-		return (!Surrogate.isHighSurrogate(c)) ? 1 : 2;
+		return (!Unicode.isHighSurrogate(c)) ? 1 : 2;
 	#end
 	}
 
@@ -59,7 +59,7 @@ class InternalEncoding {
 			: 1;
 	#else
 		var c = codeUnitAt(s, index - 1);
-		return (!Surrogate.isLowSurrogate(c)) ? 1 : 2;
+		return (!Unicode.isLowSurrogate(c)) ? 1 : 2;
 	#end
 	}
 
@@ -96,8 +96,8 @@ class InternalEncoding {
 				buf.addChar(c);
 			}
 			else {
-				buf.addChar(Surrogate.encodeHighSurrogate(c));
-				buf.addChar(Surrogate.encodeLowSurrogate(c));
+				buf.addChar(Unicode.encodeHighSurrogate(c));
+				buf.addChar(Unicode.encodeLowSurrogate(c));
 			}
 		}
 		return buf.toString();

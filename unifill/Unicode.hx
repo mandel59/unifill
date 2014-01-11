@@ -9,4 +9,21 @@ class Unicode {
 	public static inline var minLowSurrogate : Int = 0xDC00;
 	public static inline var maxLowSurrogate : Int = 0xDFFF;
 
+	public static inline function decodeSurrogate(hi : Int, lo : Int) : Int
+		return (hi - 0xD7C0 << 10) | (lo & 0x3FF);
+
+	public static inline function encodeHighSurrogate(c : Int) : Int
+		return (c >> 10) + 0xD7C0;
+
+	public static inline function encodeLowSurrogate(c : Int) : Int
+		return (c & 0x3FF) | 0xDC00;
+
+	public static inline function isHighSurrogate(code : Int) : Bool {
+		return minHighSurrogate <= code && code <= maxHighSurrogate;
+	}
+
+	public static inline function isLowSurrogate(code : Int) : Bool {
+		return minLowSurrogate <= code && code <= maxLowSurrogate;
+	}
+
 }
