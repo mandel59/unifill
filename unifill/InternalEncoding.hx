@@ -1,11 +1,11 @@
 package unifill;
 
 class InternalEncoding {
-	public static inline function internalEncodingForm() : EncodingForm
+	public static inline function internalEncoding() : Encoding
 	#if (neko || php || cpp || macro)
-		return EncodingForm.UTF8;
+		return Encoding.UTF8;
 	#else
-		return EncodingForm.UTF16;
+		return Encoding.UTF16;
 	#end
 
 	public static inline function codeUnitAt(s : String, index : Int) : Int {
