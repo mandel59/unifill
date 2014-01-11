@@ -19,7 +19,7 @@ class Unicode {
 		return (c & 0x3FF) | 0xDC00;
 
 	public static inline function isCodePoint(code : Int) : Bool {
-		return minCodePoint <= code && code <= maxCodePoint;
+		return minCodePoint <= code && code <= maxCodePoint && !isHighSurrogate(code) && !isLowSurrogate(code);
 	}
 
 	public static inline function isHighSurrogate(code : Int) : Bool {

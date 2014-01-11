@@ -14,6 +14,10 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertTrue(Unicode.isCodePoint(Unicode.maxCodePoint));
 		assertFalse(Unicode.isCodePoint(Unicode.minCodePoint - 1));
 		assertFalse(Unicode.isCodePoint(Unicode.maxCodePoint + 1));
+		assertFalse(Unicode.isCodePoint(Unicode.minLowSurrogate));
+		assertFalse(Unicode.isCodePoint(Unicode.maxLowSurrogate));
+		assertFalse(Unicode.isCodePoint(Unicode.minHighSurrogate));
+		assertFalse(Unicode.isCodePoint(Unicode.maxHighSurrogate));
 		assertEquals(cast Unicode.minCodePoint, CodePoint.fromInt(Unicode.minCodePoint));
 		assertEquals(cast Unicode.maxCodePoint, CodePoint.fromInt(Unicode.maxCodePoint));
 		#if !flash
