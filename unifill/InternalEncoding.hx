@@ -98,9 +98,8 @@ class InternalEncoding {
 		if (code < 0x10000) {
 			return String.fromCharCode(code);
 		}
-		var hi = Unicode.encodeHighSurrogate(code);
-		var lo = Unicode.encodeLowSurrogate(code);
-		return String.fromCharCode(hi) + String.fromCharCode(lo);
+		return String.fromCharCode(Unicode.encodeHighSurrogate(code))
+			+ String.fromCharCode(Unicode.encodeLowSurrogate(code));
 	#end
 	}
 
