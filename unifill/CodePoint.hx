@@ -3,6 +3,14 @@ package unifill;
 abstract CodePoint(Int) {
 
 	@:op(A + B)
+	public static inline function cons(a : CodePoint, b : String) : String
+		return a.toString() + b;
+
+	@:op(A + B)
+	public static inline function snoc(a : String, b : CodePoint) : String
+		return a + b.toString();
+
+	@:op(A + B)
 	public static inline function addInt(a : CodePoint, b : Int) : CodePoint
 		return cast ((cast a : Int) + b);
 

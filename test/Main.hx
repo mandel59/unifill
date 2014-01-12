@@ -43,6 +43,11 @@ class TestUnifill extends haxe.unit.TestCase {
 		#end
 	}
 
+	public function test_CodePoint_cons_and_snoc() {
+		assertEquals("𩸽あëa", new CodePoint(0x29E3D) + "あëa");
+		assertEquals("あëa𩸽", "あëa" + new CodePoint(0x29E3D));
+	}
+
 	public function test_Unicode_decodeSurrogate() {
 		assertEquals(0x10000, Unicode.decodeSurrogate(Unicode.minHighSurrogate, Unicode.minLowSurrogate));
 		assertEquals(0x10FFFF, Unicode.decodeSurrogate(Unicode.maxHighSurrogate, Unicode.maxLowSurrogate));
