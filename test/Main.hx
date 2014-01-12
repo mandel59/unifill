@@ -19,11 +19,11 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertFalse(Unicode.isCodePoint(Unicode.maxLowSurrogate));
 		assertFalse(Unicode.isCodePoint(Unicode.minHighSurrogate));
 		assertFalse(Unicode.isCodePoint(Unicode.maxHighSurrogate));
-		assertEquals(cast Unicode.minCodePoint, CodePoint.fromInt(Unicode.minCodePoint));
-		assertEquals(cast Unicode.maxCodePoint, CodePoint.fromInt(Unicode.maxCodePoint));
+		assertEquals(cast Unicode.minCodePoint, new CodePoint(Unicode.minCodePoint));
+		assertEquals(cast Unicode.maxCodePoint, new CodePoint(Unicode.maxCodePoint));
 		#if !flash
 		assertTrue(try {
-				CodePoint.fromInt(Unicode.minCodePoint - 1);
+				new CodePoint(Unicode.minCodePoint - 1);
 				false;
 			} catch(e : Exception) {
 				switch (e) {
@@ -32,7 +32,7 @@ class TestUnifill extends haxe.unit.TestCase {
 				}
 			});
 		assertTrue(try {
-				CodePoint.fromInt(Unicode.maxCodePoint + 1);
+				new CodePoint(Unicode.maxCodePoint + 1);
 				false;
 			} catch(e : Exception) {
 				switch (e) {

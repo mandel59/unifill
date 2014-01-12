@@ -21,10 +21,11 @@ abstract CodePoint(Int) {
 	@:op(A > B) public static function gt(a : CodePoint, b : CodePoint) : Bool;
 	@:op(A >= B) public static function gte(a : CodePoint, b : CodePoint) : Bool;
 
-	public static inline function fromInt(code : Int) : CodePoint {
-		if (Unicode.isCodePoint(code))
-			return cast code;
-		throw Exception.InvalidCodePoint(code);
+	public inline function new(code : Int) : Void {
+		if (!Unicode.isCodePoint(code)) {
+			throw Exception.InvalidCodePoint(code);
+		}
+		this = code;
 	}
 
 	public inline function toString() : String
