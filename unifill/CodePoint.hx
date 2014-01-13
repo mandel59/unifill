@@ -40,5 +40,5 @@ abstract CodePoint(Int) {
 		return InternalEncoding.fromCodePoint(this);
 
 	public inline function toInt() : Int
-		return cast this;
+		return this;
 }
