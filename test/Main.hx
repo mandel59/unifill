@@ -4,7 +4,7 @@ import unifill.CodePoint;
 import unifill.InternalEncoding;
 import unifill.Unicode;
 import unifill.Exception;
-import unifill.UnicodeString;
+import unifill.Utf32;
 
 using unifill.Unifill;
 
@@ -63,6 +63,15 @@ class TestUnifill extends haxe.unit.TestCase {
 
 	public function test_InternalEncoding_fromCodePoints() {
 		assertEquals("𩸽あëa", InternalEncoding.fromCodePoints([0x29E3D, 0x03042, 0x000EB, 0x00061]));
+	}
+
+	public function test_InternalEncoding_compare() {
+		assertTrue(InternalEncoding.compare("𩸽あëa", "𩸽あëa") == 0);
+		assertTrue(InternalEncoding.compare("𩸽あëaa", "𩸽あëa") > 0);
+		assertTrue(InternalEncoding.compare("𩸽あëa", "𩸽あëaa") < 0);
+		assertTrue(InternalEncoding.compare("𩸽あëa", "𩸽あëb") < 0);
+		assertTrue(InternalEncoding.compare("𩸽あëb", "𩸽あëa") > 0);
+		assertTrue(InternalEncoding.compare("𩸽", "�") > 0);
 	}
 
 	public function test_Unifill_uLength() {
@@ -148,8 +157,57 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals("𩸽あëa", {iterator: "𩸽あëa".uIterator}.uToString());
 	}
 
-	public function test_UnicodeString_length() {
-		assertEquals(4, new UnicodeString("𩸽あëa").length);
+	public function test_Utf32_length() {
+		assertEquals(4, new Utf32("𩸽あëa").length);
+	}
+
+	public function test_Utf32_concat() {
+		assertEquals("𩸽あëa𩸽あëa", (new Utf32("𩸽あëa") + new Utf32("𩸽あëa")).toString());
+	}
+
+	public function test_Utf32_eq() {
+		assertTrue(new Utf32("𩸽あëa") == new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽あëaa") == new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽あëa") == new Utf32("𩸽あëaa"));
+		assertFalse(new Utf32("𩸽あëa") == new Utf32("𩸽あëb"));
+		assertFalse(new Utf32("𩸽あëb") == new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽") == new Utf32("�"));
+	}
+
+	public function test_Utf32_lt() {
+		assertFalse(new Utf32("𩸽あëa") < new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽あëaa") < new Utf32("𩸽あëa"));
+		assertTrue(new Utf32("𩸽あëa") < new Utf32("𩸽あëaa"));
+		assertTrue(new Utf32("𩸽あëa") < new Utf32("𩸽あëb"));
+		assertFalse(new Utf32("𩸽あëb") < new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽") < new Utf32("�"));
+	}
+
+	public function test_Utf32_lte() {
+		assertTrue(new Utf32("𩸽あëa") <= new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽あëaa") <= new Utf32("𩸽あëa"));
+		assertTrue(new Utf32("𩸽あëa") <= new Utf32("𩸽あëaa"));
+		assertTrue(new Utf32("𩸽あëa") <= new Utf32("𩸽あëb"));
+		assertFalse(new Utf32("𩸽あëb") <= new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽") <= new Utf32("�"));
+	}
+
+	public function test_Utf32_gt() {
+		assertFalse(new Utf32("𩸽あëa") > new Utf32("𩸽あëa"));
+		assertTrue(new Utf32("𩸽あëaa") > new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽あëa") > new Utf32("𩸽あëaa"));
+		assertFalse(new Utf32("𩸽あëa") > new Utf32("𩸽あëb"));
+		assertTrue(new Utf32("𩸽あëb") > new Utf32("𩸽あëa"));
+		assertTrue(new Utf32("𩸽") > new Utf32("�"));
+	}
+
+	public function test_Utf32_gte() {
+		assertTrue(new Utf32("𩸽あëa") >= new Utf32("𩸽あëa"));
+		assertTrue(new Utf32("𩸽あëaa") >= new Utf32("𩸽あëa"));
+		assertFalse(new Utf32("𩸽あëa") >= new Utf32("𩸽あëaa"));
+		assertFalse(new Utf32("𩸽あëa") >= new Utf32("𩸽あëb"));
+		assertTrue(new Utf32("𩸽あëb") >= new Utf32("𩸽あëa"));
+		assertTrue(new Utf32("𩸽") >= new Utf32("�"));
 	}
 
 }
