@@ -74,6 +74,25 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertTrue(InternalEncoding.compare("𩸽", "�") > 0);
 	}
 
+	public function test_InternalEncoding_isValidString() {
+	#if (neko || php || cpp || macro)
+		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
+		assertFalse(InternalEncoding.isValidString("𩸽\xe3\x81ëa"));
+		assertFalse(InternalEncoding.isValidString("\xc0"));
+		assertFalse(InternalEncoding.isValidString("/\xc0\xae./"));
+		assertTrue(InternalEncoding.isValidString("\xed\x9f\xbf"));
+		assertFalse(InternalEncoding.isValidString("\xed\xa0\x80"));
+		assertFalse(InternalEncoding.isValidString("\xed\xbf\xbf"));
+		assertTrue(InternalEncoding.isValidString("\xee\x80\x80"));
+		assertTrue(InternalEncoding.isValidString("\xf4\x8f\xbf\xbf"));
+		assertFalse(InternalEncoding.isValidString("\xf4\x90\x80\x80"));
+	#else
+		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
+		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minHighSurrogate)));
+		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minLowSurrogate)));
+	#end
+	}
+
 	public function test_Unifill_uLength() {
 		assertEquals(4, "𩸽あëa".uLength());
 	}
