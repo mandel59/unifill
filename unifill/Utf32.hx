@@ -9,6 +9,7 @@ abstract Utf32(Array<CodePoint>) {
 	}
 
 	public inline function new(string : String) : Void {
+		InternalEncoding.validate(string);
 		this = [for (c in new InternalEncodingIter(string, 0, string.length)) cast InternalEncoding.codePointAt(string, c)];
 	}
 
