@@ -65,15 +65,6 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals("𩸽あëa", InternalEncoding.fromCodePoints([0x29E3D, 0x03042, 0x000EB, 0x00061]));
 	}
 
-	public function test_InternalEncoding_compare() {
-		assertTrue(InternalEncoding.compare("𩸽あëa", "𩸽あëa") == 0);
-		assertTrue(InternalEncoding.compare("𩸽あëaa", "𩸽あëa") > 0);
-		assertTrue(InternalEncoding.compare("𩸽あëa", "𩸽あëaa") < 0);
-		assertTrue(InternalEncoding.compare("𩸽あëa", "𩸽あëb") < 0);
-		assertTrue(InternalEncoding.compare("𩸽あëb", "𩸽あëa") > 0);
-		assertTrue(InternalEncoding.compare("𩸽", "�") > 0);
-	}
-
 	public function test_InternalEncoding_isValidString() {
 	#if (neko || php || cpp || macro)
 		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
@@ -168,6 +159,15 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals(true, itr.hasNext());
 		assertEquals(cast 0x00061, itr.next());
 		assertEquals(false, itr.hasNext());
+	}
+
+	public function test_Unifill_uCompare() {
+		assertTrue("𩸽あëa".uCompare("𩸽あëa") == 0);
+		assertTrue("𩸽あëaa".uCompare("𩸽あëa") > 0);
+		assertTrue("𩸽あëa".uCompare("𩸽あëaa") < 0);
+		assertTrue("𩸽あëa".uCompare("𩸽あëb") < 0);
+		assertTrue("𩸽あëb".uCompare("𩸽あëa") > 0);
+		assertTrue("𩸽".uCompare("�") > 0);
 	}
 
 	public function test_Unifill_uToString() {

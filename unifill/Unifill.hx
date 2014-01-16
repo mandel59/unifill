@@ -62,6 +62,24 @@ class Unifill {
 		};
 	}
 
+	public static function uCompare(a : String, b : String) : Int {
+		var aiter = new InternalEncodingIter(a, 0, a.length);
+		var biter = new InternalEncodingIter(b, 0, b.length);
+		while (aiter.hasNext() && biter.hasNext()) {
+			var acode = InternalEncoding.codePointAt(a, aiter.next());
+			var bcode = InternalEncoding.codePointAt(b, biter.next());
+			if (acode < bcode)
+				return -1;
+			if (acode > bcode)
+				return 1;
+		}
+		if (biter.hasNext())
+			return -1;
+		if (aiter.hasNext())
+			return 1;
+		return 0;
+	}
+
 	public static inline function uToString(codePoints : Iterable<CodePoint>) : String
 		return InternalEncoding.fromCodePoints(cast codePoints);
 

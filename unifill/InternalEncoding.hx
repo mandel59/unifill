@@ -124,24 +124,6 @@ class InternalEncoding {
 	#end
 	}
 
-	public static function compare(a : String, b : String) : Int {
-		var aiter = new InternalEncodingIter(a, 0, a.length);
-		var biter = new InternalEncodingIter(b, 0, b.length);
-		while (aiter.hasNext() && biter.hasNext()) {
-			var acode = InternalEncoding.codePointAt(a, aiter.next());
-			var bcode = InternalEncoding.codePointAt(b, biter.next());
-			if (acode < bcode)
-				return -1;
-			if (acode > bcode)
-				return 1;
-		}
-		if (biter.hasNext())
-			return -1;
-		if (aiter.hasNext())
-			return 1;
-		return 0;
-	}
-
 	static function validateSequence(s : String, index : Int) : Void {
 	#if (neko || php || cpp || macro)
 		var len = s.length;
