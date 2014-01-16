@@ -101,4 +101,18 @@ abstract Utf32(Array<CodePoint>) {
 		return cmp(cast a, cast b) >= 0;
 	}
 
+	@:op(A + B)
+	public static inline function cons(a : CodePoint, b : Utf32) : Utf32 {
+		var c = (cast b : Array<CodePoint>).copy();
+		c.unshift(a);
+		return cast c;
+	}
+
+	@:op(A + B)
+	public static inline function snoc(a : Utf32, b : CodePoint) : Utf32 {
+		var c = (cast a : Array<CodePoint>).copy();
+		c.push(b);
+		return cast c;
+	}
+
 }

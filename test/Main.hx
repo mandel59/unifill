@@ -229,6 +229,12 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertTrue(new Utf32("𩸽") >= new Utf32("�"));
 	}
 
+	public function test_Utf32_cons_and_snoc() {
+		var c = new CodePoint(0x29E3D);
+		assertTrue(new Utf32("𩸽あëa") == c + new Utf32("あëa"));
+		assertTrue(new Utf32("あëa𩸽") == new Utf32("あëa") + c);
+	}
+
 }
 
 class Main {
