@@ -4,7 +4,7 @@ Library for Unicode string support
 
 ## Usage
 
-```
+```haxe
 using unifill.Unifill;
 import unifill.CodePoint;
 
