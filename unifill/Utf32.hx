@@ -71,9 +71,8 @@ abstract Utf32(Array<CodePoint>) {
 
 	@:op(A == B)
 	public static inline function eq(a : Utf32, b : Utf32) : Bool {
-		if (a.length != b.length)
-			return false;
-		return cmp(cast a, cast b) == 0;
+		return if (a.length != b.length) false;
+		else cmp(cast a, cast b) == 0;
 	}
 
 	@:op(A != B)
@@ -103,16 +102,18 @@ abstract Utf32(Array<CodePoint>) {
 
 	@:op(A + B)
 	public static inline function cons(a : CodePoint, b : Utf32) : Utf32 {
-		var c = (cast b : Array<CodePoint>).copy();
-		c.unshift(a);
-		return cast c;
+		var c : Array<CodePoint> = cast b;
+		var d = c.copy();
+		d.unshift(a);
+		return cast d;
 	}
 
 	@:op(A + B)
 	public static inline function snoc(a : Utf32, b : CodePoint) : Utf32 {
-		var c = (cast a : Array<CodePoint>).copy();
-		c.push(b);
-		return cast c;
+		var c : Array<CodePoint> = cast a;
+		var d = c.copy();
+		d.push(b);
+		return cast d;
 	}
 
 }

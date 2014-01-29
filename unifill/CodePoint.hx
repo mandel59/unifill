@@ -12,15 +12,15 @@ abstract CodePoint(Int) {
 
 	@:op(A + B)
 	public static inline function addInt(a : CodePoint, b : Int) : CodePoint
-		return cast ((cast a : Int) + b);
+		return cast (a.toInt() + b);
 
 	@:op(A - B)
 	public static inline function sub(a : CodePoint, b : CodePoint) : Int
-		return (cast a : Int) - (cast b : Int);
+		return (a.toInt()) - (b.toInt());
 
 	@:op(A - B)
 	public static inline function subInt(a : CodePoint, b : Int) : CodePoint
-		return cast ((cast a : Int) - b);
+		return cast (a.toInt() - b);
 
 	@:op(A == B) public static function eq(a : CodePoint, b : CodePoint) : Bool;
 	@:op(A != B) public static function ne(a : CodePoint, b : CodePoint) : Bool;

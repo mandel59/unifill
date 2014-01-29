@@ -6,7 +6,7 @@ class Unifill {
 		return InternalEncoding.codePointCount(s, 0, s.length);
 
 	public static inline function uCharAt(s : String, index : Int) : String {
-	#if (neko || php || cpp || macro)
+	#if (neko || php || cpp)
 		return InternalEncoding.fromCodePoint(haxe.Utf8.charCodeAt(s, index));
 	#else
 		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
@@ -36,10 +36,11 @@ class Unifill {
 	}
 
 	public static inline function uSplit(s : String, delimiter : String) : Array<String> {
-		if (delimiter.length == 0) {
-			return [for (i in new InternalEncodingIter(s, 0, s.length)) InternalEncoding.charAt(s, i)];
+		return if (delimiter.length == 0) {
+			[for (i in new InternalEncodingIter(s, 0, s.length)) InternalEncoding.charAt(s, i)];
+		} else {
+			s.split(delimiter);
 		}
-		return s.split(delimiter);
 	}
 
 	public static inline function uSubstr(s : String, startIndex : Int, ?length : Int) : String {

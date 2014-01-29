@@ -19,11 +19,12 @@ class InternalEncoding {
 		return haxe.Utf8.charCodeAt(s.substr(index, codePointWidthAt(s, index)), 0);
 	#else
 		var hi = codeUnitAt(s, index);
-		if (Unicode.isHighSurrogate(hi)) {
+		return if (Unicode.isHighSurrogate(hi)) {
 			var lo = codeUnitAt(s, index + 1);
-			return Unicode.decodeSurrogate(hi, lo);
+			Unicode.decodeSurrogate(hi, lo);
+		} else {
+			hi;
 		}
-		return hi;
 	#end
 	}
 
@@ -95,11 +96,12 @@ class InternalEncoding {
 		buf.addChar(code);
 		return buf.toString();
 	#else
-		if (code < 0x10000) {
-			return String.fromCharCode(code);
+		return if (code < 0x10000) {
+			String.fromCharCode(code);
+		} else {
+			String.fromCharCode(Unicode.encodeHighSurrogate(code))
+				+ String.fromCharCode(Unicode.encodeLowSurrogate(code));
 		}
-		return String.fromCharCode(Unicode.encodeHighSurrogate(code))
-			+ String.fromCharCode(Unicode.encodeLowSurrogate(code));
 	#end
 	}
 

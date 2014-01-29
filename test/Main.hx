@@ -181,7 +181,9 @@ class TestUnifill extends haxe.unit.TestCase {
 	}
 
 	public function test_Utf32_concat() {
-		assertEquals("𩸽あëa𩸽あëa", (new Utf32("𩸽あëa") + new Utf32("𩸽あëa")).toString());
+		//assertEquals("𩸽あëa𩸽あëa", (new Utf32("𩸽あëa") + new Utf32("𩸽あëa")).toString());
+		var s = new Utf32("𩸽あëa");
+		assertEquals("𩸽あëa𩸽あëa", (s + s).toString());
 	}
 
 	public function test_Utf32_eq() {
