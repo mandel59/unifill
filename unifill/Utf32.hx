@@ -1,5 +1,8 @@
 package unifill;
 
+/**
+   Utf32 provides a UTF-32-encoded string.
+ **/
 abstract Utf32(Array<CodePoint>) {
 
 	public var length(get, never) : Int;

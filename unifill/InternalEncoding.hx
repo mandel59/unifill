@@ -1,5 +1,10 @@
 package unifill;
 
+/**
+   InternalEncoding provides primitive API to deal with native strings
+   across all platforms. Native strings are encoded in UTF-8 on Neko,
+   PHP, C++ and macro and in UTF-16 on Flash, C#, Java and JavaScript.
+ **/
 class InternalEncoding {
 	public static var internalEncoding(get, never) : Encoding;
 
