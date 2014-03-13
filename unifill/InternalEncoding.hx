@@ -1,11 +1,14 @@
 package unifill;
 
 /**
-   InternalEncoding provides primitive API to deal with native strings
-   across all platforms. Native strings are encoded in UTF-8 on Neko,
-   PHP, C++ and macro and in UTF-16 on Flash, C#, Java and JavaScript.
+   InternalEncoding provides primitive API to deal with strings across
+   all platforms. You should consider adopting Unifill before this.
  **/
 class InternalEncoding {
+
+	/**
+	   Returns Encoding strings on the platform are encoded in.
+	 **/
 	public static var internalEncoding(get, never) : Encoding;
 
 	static inline function get_internalEncoding() : Encoding
@@ -15,10 +18,18 @@ class InternalEncoding {
 		return Encoding.UTF16;
 	#end
 
+	/**
+	   Returns the UTF-8/16 code unit at position `index` of
+	   String `s`.
+	 **/
 	public static inline function codeUnitAt(s : String, index : Int) : Int {
 		return StringTools.fastCodeAt(s, index);
 	}
 
+	/**
+	   Returns the Unicode code point at position `index` of
+	   String `s`.
+	 **/
 	public static inline function codePointAt(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
 		return haxe.Utf8.charCodeAt(s.substr(index, codePointWidthAt(s, index)), 0);
@@ -33,10 +44,18 @@ class InternalEncoding {
 	#end
 	}
 
+	/**
+	   Returns the character as a String at position `index` of
+	   String `s`.
+	 **/
 	public static inline function charAt(s : String, index : Int) : String {
 		return s.substr(index, codePointWidthAt(s, index));
 	}
 
+	/**
+	   Returns the number of Unicode code points from `beginIndex`
+	   to `endIndex` in String `s`.
+	 **/
 	public static function codePointCount(s : String, beginIndex : Int, endIndex : Int) : Int {
 	#if (neko || php || cpp || macro)
 		return haxe.Utf8.length(s.substring(beginIndex, endIndex));
@@ -51,6 +70,10 @@ class InternalEncoding {
 	#end
 	}
 
+	/**
+	   Returns the number of units of the code point at position
+	   `index` of String `s`.
+	 **/
 	public static inline function codePointWidthAt(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
 		var c = codeUnitAt(s, index);
@@ -61,6 +84,10 @@ class InternalEncoding {
 	#end
 	}
 
+	/**
+	   Returns the number of units of the code point before
+	   position `index` of String `s`.
+	 **/
 	public static inline function codePointWidthBefore(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
 		var c1 = codeUnitAt(s, index - 1);
@@ -75,6 +102,10 @@ class InternalEncoding {
 	#end
 	}
 
+	/**
+	   Returns the index within String `s` that is offset from
+	   position `index` by `codePointOffset` code points.
+	 **/
 	public static inline function offsetByCodePoints(s : String, index : Int, codePointOffset : Int) : Int {
 		var itr = new InternalEncodingIter(s, index, s.length);
 		var i = 0;
@@ -85,6 +116,11 @@ class InternalEncoding {
 		return itr.index;
 	}
 
+	/**
+	   Returns the index within String `s` that is offset from
+	   position `index` by `codePointOffset` code points counting
+	   backward.
+	 **/
 	public static inline function backwardOffsetByCodePoints(s : String, index : Int, codePointOffset : Int) : Int {
 		var itr = new InternalEncodingBackwardIter(s, 0, index);
 		var i = 0;
@@ -95,6 +131,9 @@ class InternalEncoding {
 		return itr.index;
 	}
 
+	/**
+	   Converts the code point `code` to a character as String.
+	 **/
 	public static inline function fromCodePoint(code : Int) : String {
 	#if (neko || php || cpp || macro)
 		var buf = new haxe.Utf8();
@@ -110,6 +149,9 @@ class InternalEncoding {
 	#end
 	}
 
+	/**
+	   Converts `codePoints` to a String.
+	 **/
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : String {
 	#if (neko || php || cpp || macro)
 		var buf = new haxe.Utf8();
@@ -189,12 +231,21 @@ class InternalEncoding {
 	#end
 	}
 
+	/**
+	   Validates String `s`.
+
+	   If the code unit sequence of `s` is invalid,
+	   `Exception.InvalidCodeUnitSequence` is throwed.
+	 **/
 	public static inline function validate(s : String) : Void {
 		for (i in new InternalEncodingIter(s, 0, s.length)) {
 			validateSequence(s, i);
 		}
 	}
 
+	/**
+	   Returns if String `s` is valid.
+	 **/
 	public static function isValidString(s : String) : Bool {
 		try {
 			validate(s);
