@@ -28,7 +28,7 @@
 
 -main test.Main
 -java test/test_java
--cmd java -jar test/test_java/test_java.jar
+-cmd java -jar test/test_java/Main.jar
 
 --next
 
