@@ -14,7 +14,7 @@ class Unifill {
 		return InternalEncoding.codePointCount(s, 0, s.length);
 
 	/**
-	   Returns the character at position `index` of String `s`.
+	   Returns the character at position `index` by code points of String `s`.
 	 **/
 	public static inline function uCharAt(s : String, index : Int) : String {
 	#if (neko || php || cpp)
@@ -26,7 +26,7 @@ class Unifill {
 	}
 
 	/**
-	   Returns the code point at position `index` of String `s`.
+	   Returns the code point at position `index` by code points of String `s`.
 	 **/
 	public static inline function uCodePointAt(s : String, index : Int) : CodePoint {
 	#if (neko || php || cpp || macro)
@@ -39,6 +39,8 @@ class Unifill {
 
 	/**
 	   Returns the position of the leftmost occurence of the str within String `s`.
+
+	   `startIndex` is counted by code points.
 	 **/
 	public static inline function uIndexOf(s : String, value : String, startIndex : Int = 0) : Int {
 		var index = s.indexOf(value, InternalEncoding.offsetByCodePoints(s, 0, startIndex));
@@ -47,6 +49,8 @@ class Unifill {
 
 	/**
 	   Returns the position of the rightmost occurence of the str within String `s`.
+
+	   `startIndex` is counted by code points.
 	 **/
 	public static inline function uLastIndexOf(s : String, value : String, ?startIndex) : Int {
 		if (startIndex == null)
@@ -68,6 +72,8 @@ class Unifill {
 
 	/**
 	   Returns `length` characters of String `s`, starting at position `startIndex`.
+
+	   `startIndex` and `length` are counted by code points.
 	 **/
 	public static inline function uSubstr(s : String, startIndex : Int, ?length : Int) : String {
 		var si = (startIndex >= 0) ? InternalEncoding.offsetByCodePoints(s, 0, startIndex) : InternalEncoding.backwardOffsetByCodePoints(s, s.length, -startIndex);
@@ -77,6 +83,8 @@ class Unifill {
 
 	/**
 	   Returns the part of String `s` from `startIndex` to `endIndex`.
+
+	   `startIndex` and `endIndex` are counted by code points.
 	 **/
 	public static inline function uSubstring(s : String, startIndex : Int, ?endIndex : Int) : String {
 		var si = (startIndex < 0) ? 0 : InternalEncoding.offsetByCodePoints(s, 0, startIndex);
