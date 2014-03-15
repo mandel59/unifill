@@ -9,13 +9,13 @@ class InternalEncoding {
 	/**
 	   Returns Encoding strings on the platform are encoded in.
 	 **/
-	public static var internalEncoding(get, never) : Encoding;
+	public static var internalEncoding(get, never) : String;
 
-	static inline function get_internalEncoding() : Encoding
+	static inline function get_internalEncoding() : String
 	#if (neko || php || cpp || macro)
-		return Encoding.UTF8;
+		return "UTF-8";
 	#else
-		return Encoding.UTF16;
+		return "UTF-16";
 	#end
 
 	/**
