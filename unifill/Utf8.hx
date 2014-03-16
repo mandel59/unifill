@@ -126,8 +126,10 @@ abstract Utf8(StringU8) {
 	public inline function validate() : Void {
 		var len = this.length;
 		var accessor = this.codeUnitAt;
-		for (i in new InternalEncodingIter(new Utf8(this), 0, len)) {
+		var i = 0;
+		while (i < len) {
 			Utf8Impl.validate_sequence(len, accessor, i);
+			i += codePointWidthAt(i);
 		}
 	}
 
