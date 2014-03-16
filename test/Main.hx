@@ -5,6 +5,7 @@ import unifill.InternalEncoding;
 import unifill.Unicode;
 import unifill.Exception;
 import unifill.Utf8;
+import unifill.Utf16;
 import unifill.Utf32;
 
 using unifill.Unifill;
@@ -261,12 +262,30 @@ class TestUtf8 extends haxe.unit.TestCase {
 
 }
 
+class TestUtf16 extends haxe.unit.TestCase {
+
+	public function test_fromString() {
+		var u = Utf16.fromString("𩸽あëa");
+		assertEquals("𩸽".code, u.codePointAt(0));
+		assertEquals("あ".code, u.codePointAt(2));
+		assertEquals("ë".code, u.codePointAt(3));
+		assertEquals("a".code, u.codePointAt(4));
+	}
+
+	public function test_toString() {
+		var u = Utf16.fromArray([0xD867, 0xDE3D, 0x3042, 0xEB, 0x61]);
+		assertEquals("𩸽あëa", u.toString());
+	}
+
+}
+
 class Main {
 
 	static function main() {
 		var r = new haxe.unit.TestRunner();
 		r.add(new TestUnifill());
 		r.add(new TestUtf8());
+		r.add(new TestUtf16());
 		r.run();
 	}
 
