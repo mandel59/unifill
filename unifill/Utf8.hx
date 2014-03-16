@@ -107,7 +107,7 @@ abstract Utf8(StringU8) {
 	   If the code unit sequence of `this` is invalid,
 	   `Exception.InvalidCodeUnitSequence` is throwed.
 	**/
-	public inline function validate() : Void {
+	public function validate() : Void {
 		var len = this.length;
 		var accessor = this.codeUnitAt;
 		var i = 0;
@@ -212,7 +212,7 @@ private class Utf8Impl {
 		}
 	}
 
-	public static function validate_sequence(len : Int, accessor : Int -> Int, index : Int) : Void {
+	public static inline function validate_sequence(len : Int, accessor : Int -> Int, index : Int) : Void {
 		if (index >= len)
 			throw Exception.InvalidCodeUnitSequence(index);
 		var c1 = accessor(index);
