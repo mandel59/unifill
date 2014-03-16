@@ -25,7 +25,7 @@ abstract Utf8(StringU8) {
 		return new Utf8(StringU8.ofBytes(buf.getBytes()));
 	}
 
-	@:from public static inline function fromString(s : String) : Utf8 {
+	public static inline function fromString(s : String) : Utf8 {
 		return new Utf8(StringU8.fromString(s));
 	}
 
@@ -133,7 +133,7 @@ abstract Utf8(StringU8) {
 		}
 	}
 
-	@:to public inline function toString() : String {
+	public inline function toString() : String {
 		return this.toString();
 	}
 
