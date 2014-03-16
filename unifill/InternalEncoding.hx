@@ -6,6 +6,152 @@ package unifill;
  **/
 class InternalEncoding {
 
+#if (neko || php || cpp || macro)
+
+	static inline function code_point_width(c : Int) : Int {
+		return (c < 0xC0) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : (c < 0xF8) ? 4 : 1;
+	}
+
+	static inline function find_prev_code_point(accessor : Int -> Int, index : Int) : Int {
+		var c1 = accessor(index - 1);
+		return (c1 < 0x80 || c1 >= 0xC0) ? 1
+			: (accessor(index - 2) & 0xE0 == 0xC0) ? 2
+			: (accessor(index - 3) & 0xF0 == 0xE0) ? 3
+			: (accessor(index - 4) & 0xF8 == 0xF0) ? 4
+			: 1;
+	}
+
+	static function decode_code_point(accessor : Int -> Int, index : Int) : Int {
+		var c1 = accessor(index);
+		if (c1 < 0x80) {
+			return c1;
+		} else if (c1 < 0xC0) {
+			throw Exception.InvalidCodeUnitSequence(index);
+		} else if (c1 < 0xE0) {
+			var c2 = accessor(index + 1);
+			return ((c1 & 0x3F) << 6) | (c2 & 0x7F);
+		} else if (c1 < 0xF0) {
+			var c2 = accessor(index + 1);
+			var c3 = accessor(index + 2);
+			return ((c1 & 0x1F) << 12) | ((c2 & 0x7F) << 6) | (c3 & 0x7F);
+		} else if (c1 < 0xF8) {
+			var c2 = accessor(index + 1);
+			var c3 = accessor(index + 2);
+			var c4 = accessor(index + 3);
+			return ((c1 & 0x0F) << 18) | ((c2 & 0x7F) << 12) | ((c3 & 0x7F) << 6) | (c4 & 0x7F);
+		} else {
+			throw Exception.InvalidCodeUnitSequence(index);
+		}
+	}
+
+	static function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
+		if (codePoint <= 0x7F) {
+			addUnit(codePoint);
+		} else if (codePoint <= 0x7FF) {
+			addUnit(0xC0 | (codePoint >> 6));
+			addUnit(0x80 | (codePoint & 0x3F));
+		} else if (codePoint <= 0xFFFF) {
+			addUnit(0xE0 | (codePoint >> 12));
+			addUnit(0x80 | ((codePoint >> 6) & 0x3F));
+			addUnit(0x80 | (codePoint & 0x3F));
+		} else if (codePoint <= 0x10FFFF) {
+			addUnit(0xF0 | (codePoint >> 18));
+			addUnit(0x80 | ((codePoint >> 12) & 0x3F));
+			addUnit(0x80 | ((codePoint >> 6) & 0x3F));
+			addUnit(0x80 | (codePoint & 0x3F));
+		} else {
+			throw Exception.InvalidCodePoint(codePoint);
+		}
+	}
+
+	static function validate_sequence(len : Int, accessor : Int -> Int, index : Int) : Void {
+		if (index >= len)
+			throw Exception.InvalidCodeUnitSequence(index);
+		var c1 = accessor(index);
+		if (c1 < 0x80) {
+			return;
+		}
+		if (c1 < 0xC0) {
+			throw Exception.InvalidCodeUnitSequence(index);
+		}
+		if (index >= len - 1)
+			throw Exception.InvalidCodeUnitSequence(index);
+		var c2 = accessor(index + 1);
+		if (c1 < 0xE0) {
+			if ((c1 & 0x1E != 0) && (c2 & 0xC0 == 0x80))
+				return;
+			else
+				throw Exception.InvalidCodeUnitSequence(index);
+		}
+		if (index >= len - 2)
+			throw Exception.InvalidCodeUnitSequence(index);
+		var c3 = accessor(index + 2);
+		if (c1 < 0xF0) {
+			if (((c1 & 0x0F != 0) || (c2 & 0x20 != 0)) && (c2 & 0xC0 == 0x80) && (c3 & 0xC0 == 0x80)
+				&& !(c1 == 0xED && 0xA0 <= c2 && c2 <= 0xBF))
+				return;
+			else
+				throw Exception.InvalidCodeUnitSequence(index);
+		}
+		if (index >= len - 3)
+			throw Exception.InvalidCodeUnitSequence(index);
+		var c4 = accessor(index + 3);
+		if (c1 < 0xF8) {
+			if (((c1 & 0x07 != 0) || (c2 & 0x30 != 0)) && (c2 & 0xC0 == 0x80) && (c3 & 0xC0 == 0x80) && (c4 & 0xC0 == 0x80)
+				&& !((c1 == 0xF4 && c2 > 0x8F) || c1 > 0xF4))
+				return;
+			else
+				throw Exception.InvalidCodeUnitSequence(index);
+		}
+		throw Exception.InvalidCodeUnitSequence(index);
+	}
+
+#else
+
+	static inline function code_point_width(c : Int) : Int {
+		return (!Unicode.isHighSurrogate(c)) ? 1 : 2;
+	}
+
+	static inline function find_prev_code_point(accessor : Int -> Int, index : Int) : Int {
+		var c = accessor(index - 1);
+		return (!Unicode.isLowSurrogate(c)) ? 1 : 2;
+	}
+
+	static function decode_code_point(accessor : Int -> Int, index : Int) : Int {
+		var hi = accessor(index);
+		if (Unicode.isHighSurrogate(hi)) {
+			var lo = accessor(index + 1);
+			return Unicode.decodeSurrogate(hi, lo);
+		} else {
+			return hi;
+		}
+	}
+
+	static function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
+		if (codePoint <= 0xFFFF) {
+			addUnit(codePoint);
+		} else {
+			addUnit(Unicode.encodeHighSurrogate(codePoint));
+			addUnit(Unicode.encodeLowSurrogate(codePoint));
+		}
+	}
+
+	static function validate_sequence(len : Int, accessor : Int -> Int, index : Int) : Void {
+		if (index >= len)
+			throw Exception.InvalidCodeUnitSequence(index);
+		var c = accessor(index);
+		if (Unicode.isHighSurrogate(c)) {
+			if (index >= len - 1 || !Unicode.isLowSurrogate(accessor(index + 1)))
+				throw Exception.InvalidCodeUnitSequence(index);
+		}
+		if (Unicode.isLowSurrogate(c)) {
+			throw Exception.InvalidCodeUnitSequence(index);
+		}
+		return;
+	}
+
+#end
+
 	/**
 	   Returns Encoding strings on the platform are encoded in.
 	 **/
@@ -30,18 +176,9 @@ class InternalEncoding {
 	   Returns the Unicode code point at position `index` of
 	   String `s`.
 	 **/
-	public static inline function codePointAt(s : String, index : Int) : Int {
-	#if (neko || php || cpp || macro)
-		return haxe.Utf8.charCodeAt(s.substr(index, codePointWidthAt(s, index)), 0);
-	#else
-		var hi = codeUnitAt(s, index);
-		return if (Unicode.isHighSurrogate(hi)) {
-			var lo = codeUnitAt(s, index + 1);
-			Unicode.decodeSurrogate(hi, lo);
-		} else {
-			hi;
-		}
-	#end
+	public static function codePointAt(s : String, index : Int) : Int {
+		var accessor = function(i) { return codeUnitAt(s, i); };
+		return decode_code_point(accessor, index);
 	}
 
 	/**
@@ -57,9 +194,6 @@ class InternalEncoding {
 	   to `endIndex` in String `s`.
 	 **/
 	public static function codePointCount(s : String, beginIndex : Int, endIndex : Int) : Int {
-	#if (neko || php || cpp || macro)
-		return haxe.Utf8.length(s.substring(beginIndex, endIndex));
-	#else
 		var itr = new InternalEncodingIter(s, beginIndex, endIndex);
 		var i = 0;
 		while (itr.hasNext()) {
@@ -67,7 +201,6 @@ class InternalEncoding {
 			++i;
 		}
 		return i;
-	#end
 	}
 
 	/**
@@ -75,13 +208,8 @@ class InternalEncoding {
 	   `index` of String `s`.
 	 **/
 	public static inline function codePointWidthAt(s : String, index : Int) : Int {
-	#if (neko || php || cpp || macro)
 		var c = codeUnitAt(s, index);
-		return (c < 0xC0) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : (c < 0xF8) ? 4 : 1;
-	#else
-		var c = codeUnitAt(s, index);
-		return (!Unicode.isHighSurrogate(c)) ? 1 : 2;
-	#end
+		return code_point_width(c);
 	}
 
 	/**
@@ -89,17 +217,8 @@ class InternalEncoding {
 	   position `index` of String `s`.
 	 **/
 	public static inline function codePointWidthBefore(s : String, index : Int) : Int {
-	#if (neko || php || cpp || macro)
-		var c1 = codeUnitAt(s, index - 1);
-		return (c1 < 0x80 || c1 >= 0xC0) ? 1
-			: (codeUnitAt(s, index - 2) & 0xE0 == 0xC0) ? 2
-			: (codeUnitAt(s, index - 3) & 0xF0 == 0xE0) ? 3
-			: (codeUnitAt(s, index - 4) & 0xF8 == 0xF0) ? 4
-			: 1;
-	#else
-		var c = codeUnitAt(s, index - 1);
-		return (!Unicode.isLowSurrogate(c)) ? 1 : 2;
-	#end
+		var accessor = function(i) { return codeUnitAt(s, i); };
+		return find_prev_code_point(accessor, index);
 	}
 
 	/**
@@ -134,101 +253,21 @@ class InternalEncoding {
 	/**
 	   Converts the code point `code` to a character as String.
 	 **/
-	public static inline function fromCodePoint(code : Int) : String {
-	#if (neko || php || cpp || macro)
-		var buf = new haxe.Utf8();
-		buf.addChar(code);
+	public static inline function fromCodePoint(codePoint : Int) : String {
+		var buf = new StringBuf();
+		encode_code_point(buf.addChar, codePoint);
 		return buf.toString();
-	#else
-		return if (code < 0x10000) {
-			String.fromCharCode(code);
-		} else {
-			String.fromCharCode(Unicode.encodeHighSurrogate(code))
-				+ String.fromCharCode(Unicode.encodeLowSurrogate(code));
-		}
-	#end
 	}
 
 	/**
 	   Converts `codePoints` to a String.
 	 **/
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : String {
-	#if (neko || php || cpp || macro)
-		var buf = new haxe.Utf8();
-		for (c in codePoints)
-			buf.addChar(c);
-		return buf.toString();
-	#else
 		var buf = new StringBuf();
 		for (c in codePoints) {
-			if (c < 0x10000) {
-				buf.addChar(c);
-			}
-			else {
-				buf.addChar(Unicode.encodeHighSurrogate(c));
-				buf.addChar(Unicode.encodeLowSurrogate(c));
-			}
+			encode_code_point(buf.addChar, c);
 		}
 		return buf.toString();
-	#end
-	}
-
-	static function validateSequence(s : String, index : Int) : Void {
-	#if (neko || php || cpp || macro)
-		var len = s.length;
-		if (index >= len)
-			throw Exception.InvalidCodeUnitSequence(index);
-		var c1 = codeUnitAt(s, index);
-		if (c1 < 0x80) {
-			return;
-		}
-		if (c1 < 0xC0) {
-			throw Exception.InvalidCodeUnitSequence(index);
-		}
-		if (index >= len - 1)
-			throw Exception.InvalidCodeUnitSequence(index);
-		var c2 = codeUnitAt(s, index + 1);
-		if (c1 < 0xE0) {
-			if ((c1 & 0x1E != 0) && (c2 & 0xC0 == 0x80))
-				return;
-			else
-				throw Exception.InvalidCodeUnitSequence(index);
-		}
-		if (index >= len - 2)
-			throw Exception.InvalidCodeUnitSequence(index);
-		var c3 = codeUnitAt(s, index + 2);
-		if (c1 < 0xF0) {
-			if (((c1 & 0x0F != 0) || (c2 & 0x20 != 0)) && (c2 & 0xC0 == 0x80) && (c3 & 0xC0 == 0x80)
-				&& !(c1 == 0xED && 0xA0 <= c2 && c2 <= 0xBF))
-				return;
-			else
-				throw Exception.InvalidCodeUnitSequence(index);
-		}
-		if (index >= len - 3)
-			throw Exception.InvalidCodeUnitSequence(index);
-		var c4 = codeUnitAt(s, index + 3);
-		if (c1 < 0xF8) {
-			if (((c1 & 0x07 != 0) || (c2 & 0x30 != 0)) && (c2 & 0xC0 == 0x80) && (c3 & 0xC0 == 0x80) && (c4 & 0xC0 == 0x80)
-				&& !((c1 == 0xF4 && c2 > 0x8F) || c1 > 0xF4))
-				return;
-			else
-				throw Exception.InvalidCodeUnitSequence(index);
-		}
-		throw Exception.InvalidCodeUnitSequence(index);
-	#else
-		var len = s.length;
-		if (index >= len)
-			throw Exception.InvalidCodeUnitSequence(index);
-		var c = codeUnitAt(s, index);
-		if (Unicode.isHighSurrogate(c)) {
-			if (index >= len - 1 || !Unicode.isLowSurrogate(codeUnitAt(s, index + 1)))
-				throw Exception.InvalidCodeUnitSequence(index);
-		}
-		if (Unicode.isLowSurrogate(c)) {
-			throw Exception.InvalidCodeUnitSequence(index);
-		}
-		return;
-	#end
 	}
 
 	/**
@@ -238,8 +277,10 @@ class InternalEncoding {
 	   `Exception.InvalidCodeUnitSequence` is throwed.
 	 **/
 	public static inline function validate(s : String) : Void {
-		for (i in new InternalEncodingIter(s, 0, s.length)) {
-			validateSequence(s, i);
+		var len = s.length;
+		var accessor = function(i) { return codeUnitAt(s, i); };
+		for (i in new InternalEncodingIter(s, 0, len)) {
+			validate_sequence(len, accessor, i);
 		}
 	}
 
