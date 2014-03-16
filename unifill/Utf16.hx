@@ -1,8 +1,5 @@
 package unifill;
 
-import haxe.io.Bytes;
-import haxe.io.BytesBuffer;
-
 abstract Utf16(StringU16) {
 
 	/**
