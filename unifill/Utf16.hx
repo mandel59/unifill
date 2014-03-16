@@ -268,7 +268,7 @@ private abstract StringU16Buffer(Array<Int>) {
 		this = [];
 	}
 
-	public inline function addUnit(unit : Int) : Void {
+	public #if !cpp inline #end function addUnit(unit : Int) : Void {
 		this.push(unit);
 	}
 
