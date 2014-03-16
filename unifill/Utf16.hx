@@ -91,27 +91,11 @@ abstract Utf16(StringU16) {
 	   position `index` by `codePointOffset` code points.
 	**/
 	public inline function offsetByCodePoints(index : Int, codePointOffset : Int) : Int {
-		var len = this.length;
-		var i = 0;
-		while (i < codePointOffset && index < len) {
-			index += codePointWidthAt(index);
-			++i;
+		return if (codePointOffset >= 0) {
+			forward_offset_by_code_points(index, codePointOffset);
+		} else {
+			backward_offset_by_code_points(index, -codePointOffset);
 		}
-		return index;
-	}
-
-	/**
-	   Returns the index within `this` that is offset from
-	   position `index` by `codePointOffset` code points counting
-	   backward.
-	**/
-	public inline function backwardOffsetByCodePoints(index : Int, codePointOffset : Int) : Int {
-		var count = 0;
-		while (count < codePointOffset && 0 < index) {
-			index -= codePointWidthBefore(index);
-			++count;
-		}
-		return index;
 	}
 
 	/**
@@ -144,6 +128,25 @@ abstract Utf16(StringU16) {
 
 	inline function get_length() : Int {
 		return this.length;
+	}
+
+	inline function forward_offset_by_code_points(index : Int, codePointOffset : Int) : Int {
+		var len = this.length;
+		var i = 0;
+		while (i < codePointOffset && index < len) {
+			index += codePointWidthAt(index);
+			++i;
+		}
+		return index;
+	}
+
+	inline function backward_offset_by_code_points(index : Int, codePointOffset : Int) : Int {
+		var count = 0;
+		while (count < codePointOffset && 0 < index) {
+			index -= codePointWidthBefore(index);
+			++count;
+		}
+		return index;
 	}
 
 }
