@@ -99,6 +99,13 @@ abstract Utf16(StringU16) {
 	}
 
 	/**
+	   Returns `len` code units of `this`, starting at position pos.
+	**/
+	public inline function substr(index : Int, ?len : Int) : Utf16 {
+		return new Utf16(this.substr(index, len));
+	}
+
+	/**
 	   Validates `this` Utf16 string.
 
 	   If the code unit sequence of `this` is invalid,
@@ -239,7 +246,7 @@ private abstract StringU16(String) {
 		return StringTools.fastCodeAt(this, index);
 	}
 
-	public inline function substr(index : Int, len : Int) : StringU16 {
+	public inline function substr(index : Int, ?len : Int) : StringU16 {
 		return new StringU16(this.substr(index, len));
 	}
 
@@ -307,8 +314,13 @@ private abstract StringU16(Array<Int>) {
 		return this[index];
 	}
 
-	public inline function substr(index : Int, len : Int) : StringU16 {
-		var a = this.slice(index, index + len);
+	public inline function substr(index : Int, ?len : Int) : StringU16 {
+		if (index < 0) {
+			index += this.length;
+			if (index < 0) index = 0;
+		}
+		var j = (len != null) ? index + len : this.length;
+		var a = this.slice(index, j);
 		return new StringU16(a);
 	}
 

@@ -102,6 +102,13 @@ abstract Utf8(StringU8) {
 	}
 
 	/**
+	   Returns `len` code units of `this`, starting at position pos.
+	**/
+	public inline function substr(index : Int, ?len : Int) : Utf8 {
+		return new Utf8(this.substr(index, len));
+	}
+
+	/**
 	   Validates `this` Utf8 string.
 
 	   If the code unit sequence of `this` is invalid,
@@ -278,7 +285,7 @@ private abstract StringU8(String) {
 		return StringTools.fastCodeAt(this, index);
 	}
 
-	public inline function substr(index : Int, len : Int) : StringU8 {
+	public inline function substr(index : Int, ?len : Int) : StringU8 {
 		return new StringU8(this.substr(index, len));
 	}
 
@@ -329,7 +336,12 @@ private abstract StringU8(Bytes) {
 		return this.get(index);
 	}
 
-	public inline function substr(index : Int, len : Int) : StringU8 {
+	public inline function substr(index : Int, ?len : Int) : StringU8 {
+		if (index < 0) {
+			index += this.length;
+			if (index < 0) index = 0;
+		}
+		if (len == null) len = this.length - index;
 		var b = this.sub(index, len);
 		return new StringU8(b);
 	}
