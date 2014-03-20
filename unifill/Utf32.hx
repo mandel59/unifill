@@ -51,14 +51,6 @@ class Utf32 {
 		return 1;
 	}
 
-	public inline function toUpperCase() : Utf32 {
-		return new Utf32([for (c in this.array) if ("a".code <= c && c <= "z".code) c - ("a".code - "A".code) else c]);
-	}
-
-	public inline function toLowerCase() : Utf32 {
-		return new Utf32([for (c in this.array) if ("A".code <= c && c <= "Z".code) c - ("A".code - "a".code) else c]);
-	}
-
 	public inline function toString() : String {
 		return InternalEncoding.fromCodePoints(this.array);
 	}
