@@ -1,6 +1,6 @@
 package unifill;
 
-abstract Utf16(StringU16) {
+class Utf16 {
 
 	/**
 	   Converts the code point `code` to a character as a Utf16 string.
@@ -36,7 +36,7 @@ abstract Utf16(StringU16) {
 	   Returns the UTF-16 code unit at position `index` of `this`.
 	**/
 	public inline function codeUnitAt(index : Int) : Int {
-		return this.codeUnitAt(index);
+		return this.str.codeUnitAt(index);
 	}
 
 	/**
@@ -44,7 +44,7 @@ abstract Utf16(StringU16) {
 	   `this`.
 	**/
 	public function codePointAt(index : Int) : Int {
-		return Utf16Impl.decode_code_point(this.codeUnitAt, index);
+		return Utf16Impl.decode_code_point(this.str.codeUnitAt, index);
 	}
 
 	/**
@@ -52,7 +52,7 @@ abstract Utf16(StringU16) {
 	   `this`.
 	**/
 	public inline function charAt(index : Int) : Utf16 {
-		return new Utf16(this.substr(index, codePointWidthAt(index)));
+		return new Utf16(this.str.substr(index, codePointWidthAt(index)));
 	}
 
 	/**
@@ -74,7 +74,7 @@ abstract Utf16(StringU16) {
 	   `index` of `this`.
 	**/
 	public inline function codePointWidthAt(index : Int) : Int {
-		var c = this.codeUnitAt(index);
+		var c = this.str.codeUnitAt(index);
 		return Utf16Impl.code_point_width(c);
 	}
 
@@ -83,7 +83,7 @@ abstract Utf16(StringU16) {
 	   position `index` of `this`.
 	**/
 	public inline function codePointWidthBefore(index : Int) : Int {
-		return Utf16Impl.find_prev_code_point(this.codeUnitAt, index);
+		return Utf16Impl.find_prev_code_point(this.str.codeUnitAt, index);
 	}
 
 	/**
@@ -102,7 +102,7 @@ abstract Utf16(StringU16) {
 	   Returns `len` code units of `this`, starting at position pos.
 	**/
 	public inline function substr(index : Int, ?len : Int) : Utf16 {
-		return new Utf16(this.substr(index, len));
+		return new Utf16(this.str.substr(index, len));
 	}
 
 	/**
@@ -112,8 +112,8 @@ abstract Utf16(StringU16) {
 	   `Exception.InvalidCodeUnitSequence` is throwed.
 	**/
 	public function validate() : Void {
-		var len = this.length;
-		var accessor = this.codeUnitAt;
+		var len = this.str.length;
+		var accessor = this.str.codeUnitAt;
 		var i = 0;
 		while  (i < len) {
 			Utf16Impl.validate_sequence(len, accessor, i);
@@ -122,23 +122,25 @@ abstract Utf16(StringU16) {
 	}
 
 	public inline function toString() : String {
-		return this.toString();
+		return this.str.toString();
 	}
 
 	public inline function toArray() : Array<Int> {
-		return this.toArray();
+		return this.str.toArray();
 	}
 
+	var str : StringU16;
+
 	inline function new(s : StringU16) {
-		this = s;
+		this.str = s;
 	}
 
 	inline function get_length() : Int {
-		return this.length;
+		return this.str.length;
 	}
 
 	inline function forward_offset_by_code_points(index : Int, codePointOffset : Int) : Int {
-		var len = this.length;
+		var len = this.str.length;
 		var i = 0;
 		while (i < codePointOffset && index < len) {
 			index += codePointWidthAt(index);
