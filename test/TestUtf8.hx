@@ -4,6 +4,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 import unifill.Exception;
 import unifill.Utf8;
+using unifill.UtfTools;
 
 class TestUtf8 extends haxe.unit.TestCase {
 
@@ -59,6 +60,20 @@ class TestUtf8 extends haxe.unit.TestCase {
 			var u = Utf8.fromBytes(a2b(c));
 			assertFalse(isValid(u));
 		}
+	}
+
+	public function test_compare() {
+		var s0 = Utf8.fromString("𩸽あëa");
+		var s1 = Utf8.fromString("𩸽あëaa");
+		var s2 = Utf8.fromString("𩸽あëb");
+		var s3 = Utf8.fromString("𩸽");
+		var s4 = Utf8.fromString("�");
+		assertTrue(s0.compare(s0) == 0);
+		assertTrue(s0.compare(s1) < 0);
+		assertTrue(s1.compare(s0) > 0);
+		assertTrue(s0.compare(s2) < 0);
+		assertTrue(s2.compare(s0) > 0);
+		assertTrue(s3.compare(s4) > 0);
 	}
 
 }
