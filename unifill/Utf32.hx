@@ -3,7 +3,7 @@ package unifill;
 /**
    Utf32 provides a UTF-32-encoded string.
  **/
-abstract Utf32(Array<Int>) {
+class Utf32 {
 
 	public static inline function fromCharCode(code : Int) : Utf32 {
 		return new Utf32([code]);
@@ -21,65 +21,76 @@ abstract Utf32(Array<Int>) {
 	public var length(get, never) : Int;
 
 	public inline function charAt(index : Int) : Utf32 {
-		if (0 <= index && index < this.length) {
-			return new Utf32([this[index]]);
+		if (0 <= index && index < this.array.length) {
+			return new Utf32([this.array[index]]);
 		} else {
 			return new Utf32([]);
 		}
 	}
 
 	public inline function charCodeAt(index : Int) : Null<Int> {
-		if (0 <= index && index < this.length) {
-			return this[index];
+		if (0 <= index && index < this.array.length) {
+			return this.array[index];
 		}
 		return null;
 	}
 
+	public inline function codeUnitAt(index : Int) : Int {
+		return this.array[index];
+	}
+
+	public inline function codePointAt(index : Int) : Int {
+		return this.array[index];
+	}
+
+	public inline function codePointWidthAt(index : Int) : Int {
+		return 1;
+	}
+
+	public inline function codePointWidthBefore(index : Int) : Int {
+		return 1;
+	}
+
 	public inline function toUpperCase() : Utf32 {
-		return new Utf32([for (c in this) if ("a".code <= c && c <= "z".code) c - ("a".code - "A".code) else c]);
+		return new Utf32([for (c in this.array) if ("a".code <= c && c <= "z".code) c - ("a".code - "A".code) else c]);
 	}
 
 	public inline function toLowerCase() : Utf32 {
-		return new Utf32([for (c in this) if ("A".code <= c && c <= "Z".code) c - ("A".code - "a".code) else c]);
+		return new Utf32([for (c in this.array) if ("A".code <= c && c <= "Z".code) c - ("A".code - "a".code) else c]);
 	}
 
 	public inline function toString() : String {
-		return InternalEncoding.fromCodePoints(this);
+		return InternalEncoding.fromCodePoints(this.array);
 	}
 
 	public inline function toArray() : Array<Int> {
-		return this.copy();
+		return this.array.copy();
+	}
+
+	public function validate() : Void {
+		var i = 0;
+		var len = this.array.length;
+		while (i < len) {
+			if (!Unicode.isCodePoint(this.array[i++])) {
+				throw Exception.InvalidCodeUnitSequence(i);
+			}
+		}
 	}
 
 	@:op(A + B)
 	static inline function concat(a : Utf32, b : Utf32) : Utf32 {
-		var s : Array<Int> = cast a;
-		return new Utf32(s.concat(cast b));
+		var s : Array<Int> = a.array;
+		return new Utf32(s.concat(b.array));
 	}
 
-	static function cmp(a : Array<Int>, b : Array<Int>) : Int {
-		var alen = a.length;
-		var blen = b.length;
-		var len = if (alen < blen) blen else alen;
-		var i = 0;
-		while (i < len) {
-			if (i == alen)
-				return -1;
-			if (i == blen)
-				return 1;
-			if (a[i] < b[i])
-				return -1;
-			if (a[i] > b[i])
-				return 1;
-			++i;
-		}
-		return 0;
+	static inline function cmp(a : Utf32, b : Utf32) : Int {
+		return UtfTools.compare(a, b);
 	}
 
 	@:op(A == B)
 	static inline function eq(a : Utf32, b : Utf32) : Bool {
-		return if (a.length != b.length) false;
-		else cmp(cast a, cast b) == 0;
+		return if (a.array.length != b.array.length) false;
+		else cmp(a, b) == 0;
 	}
 
 	@:op(A != B)
@@ -89,46 +100,48 @@ abstract Utf32(Array<Int>) {
 
 	@:op(A < B)
 	static inline function lt(a : Utf32, b : Utf32) : Bool {
-		return cmp(cast a, cast b) < 0;
+		return cmp(a, b) < 0;
 	}
 
 	@:op(A <= B)
 	static inline function lte(a : Utf32, b : Utf32) : Bool {
-		return cmp(cast a, cast b) <= 0;
+		return cmp(a, b) <= 0;
 	}
 
 	@:op(A > B)
 	static inline function gt(a : Utf32, b : Utf32) : Bool {
-		return cmp(cast a, cast b) > 0;
+		return cmp(a, b) > 0;
 	}
 
 	@:op(A >= B)
 	static inline function gte(a : Utf32, b : Utf32) : Bool {
-		return cmp(cast a, cast b) >= 0;
+		return cmp(a, b) >= 0;
 	}
 
 	@:op(A + B)
 	static inline function cons(a : CodePoint, b : Utf32) : Utf32 {
-		var c : Array<Int> = cast b;
+		var c : Array<Int> = b.array;
 		var d = c.copy();
 		d.unshift(a.toInt());
-		return cast d;
+		return new Utf32(d);
 	}
 
 	@:op(A + B)
 	static inline function snoc(a : Utf32, b : CodePoint) : Utf32 {
-		var c : Array<Int> = cast a;
+		var c : Array<Int> = a.array;
 		var d = c.copy();
 		d.push(b.toInt());
-		return cast d;
+		return new Utf32(d);
 	}
 
+	var array : Array<Int>;
+
 	inline function get_length() : Int {
-		return this.length;
+		return this.array.length;
 	}
 
 	inline function new(a : Array<Int>) {
-		this = a;
+		this.array = a;
 	}
 
 }
