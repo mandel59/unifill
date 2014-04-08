@@ -4,8 +4,8 @@
     "license": "MIT",
     "tags": ["cross", "unicode", "string"],
     "description": "Library for Unicode string support",
-    "version": "0.0.1",
-    "releasenote": "Initial release",
+    "version": "0.0.2",
+    "releasenote": "Add Utf8 and Utf16",
     "contributors": ["mandel59"],
     "dependencies": {}
 }
