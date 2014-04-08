@@ -47,7 +47,7 @@ class Utf8 {
 	   `this`.
 	**/
 	public function codePointAt(index : Int) : Int {
-		return Utf8Impl.decode_code_point(this.str.codeUnitAt, index);
+		return Utf8Impl.decode_code_point(codeUnitAt, index);
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Utf8 {
 	   `index` of `this`.
 	**/
 	public inline function codePointWidthAt(index : Int) : Int {
-		var c = this.str.codeUnitAt(index);
+		var c = codeUnitAt(index);
 		return Utf8Impl.code_point_width(c);
 	}
 
@@ -86,7 +86,7 @@ class Utf8 {
 	   position `index` of `this`.
 	**/
 	public inline function codePointWidthBefore(index : Int) : Int {
-		return Utf8Impl.find_prev_code_point(this.str.codeUnitAt, index);
+		return Utf8Impl.find_prev_code_point(codeUnitAt, index);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Utf8 {
 	**/
 	public function validate() : Void {
 		var len = this.str.length;
-		var accessor = this.str.codeUnitAt;
+		var accessor = codeUnitAt;
 		var i = 0;
 		while (i < len) {
 			Utf8Impl.validate_sequence(len, accessor, i);
@@ -352,8 +352,9 @@ private abstract StringU8(Bytes) {
 		var buf = new StringBuf();
 		var i = 0;
 		var len = this.length;
+		var cua = function (i) return this.get(i);
 		while (i < len) {
-			var u = Utf8Impl.decode_code_point(codeUnitAt, i);
+			var u = Utf8Impl.decode_code_point(cua, i);
 			buf.add(InternalEncoding.fromCodePoint(u));
 			i += Utf8Impl.code_point_width(codeUnitAt(i));
 		}

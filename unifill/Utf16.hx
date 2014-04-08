@@ -7,7 +7,7 @@ class Utf16 {
 	**/
 	public static inline function fromCodePoint(codePoint : Int) : Utf16 {
 		var buf = new StringU16Buffer();
-		Utf16Impl.encode_code_point(buf.addUnit, codePoint);
+		Utf16Impl.encode_code_point(function (x) return buf.addUnit(x), codePoint);
 		return new Utf16(buf.getStringU16());
 	}
 
@@ -17,7 +17,7 @@ class Utf16 {
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf16 {
 		var buf = new StringU16Buffer();
 		for (c in codePoints) {
-			Utf16Impl.encode_code_point(buf.addUnit, c);
+			Utf16Impl.encode_code_point(function (x) return buf.addUnit(x), c);
 		}
 		return new Utf16(buf.getStringU16());
 	}
@@ -44,7 +44,7 @@ class Utf16 {
 	   `this`.
 	**/
 	public function codePointAt(index : Int) : Int {
-		return Utf16Impl.decode_code_point(this.str.codeUnitAt, index);
+		return Utf16Impl.decode_code_point(codeUnitAt, index);
 	}
 
 	/**
@@ -74,7 +74,7 @@ class Utf16 {
 	   `index` of `this`.
 	**/
 	public inline function codePointWidthAt(index : Int) : Int {
-		var c = this.str.codeUnitAt(index);
+		var c = codeUnitAt(index);
 		return Utf16Impl.code_point_width(c);
 	}
 
@@ -83,7 +83,7 @@ class Utf16 {
 	   position `index` of `this`.
 	**/
 	public inline function codePointWidthBefore(index : Int) : Int {
-		return Utf16Impl.find_prev_code_point(this.str.codeUnitAt, index);
+		return Utf16Impl.find_prev_code_point(codeUnitAt, index);
 	}
 
 	/**
@@ -113,7 +113,7 @@ class Utf16 {
 	**/
 	public function validate() : Void {
 		var len = this.str.length;
-		var accessor = this.str.codeUnitAt;
+		var accessor = codeUnitAt;
 		var i = 0;
 		while  (i < len) {
 			Utf16Impl.validate_sequence(len, accessor, i);
@@ -294,7 +294,7 @@ private abstract StringU16(Array<Int>) {
 
 	public static function fromString(s : String) : StringU16 {
 		var buf = new StringU16Buffer();
-		var addUnit = buf.addUnit;
+		var addUnit = function (x) return buf.addUnit(x);
 		for (i in new InternalEncodingIter(s, 0, s.length)) {
 			var c = InternalEncoding.codePointAt(s, i);
 			Utf16Impl.encode_code_point(addUnit, c);
@@ -330,8 +330,9 @@ private abstract StringU16(Array<Int>) {
 		var buf = new StringBuf();
 		var i = 0;
 		var len = this.length;
+		var cua = function (i) return this[i];
 		while (i < len) {
-			var u = Utf16Impl.decode_code_point(codeUnitAt, i);
+			var u = Utf16Impl.decode_code_point(cua, i);
 			buf.add(InternalEncoding.fromCodePoint(u));
 			i += Utf16Impl.code_point_width(codeUnitAt(i));
 		}
