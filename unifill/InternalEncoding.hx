@@ -2,6 +2,8 @@ package unifill;
 
 #if (neko || php || cpp || macro)
 	private typedef UtfX = Utf8;
+#elseif python
+	private typedef UtfX = Utf32;
 #else
 	private typedef UtfX = Utf16;
 #end
@@ -20,12 +22,14 @@ class InternalEncoding {
 	static inline function get_internalEncoding() : String
 	#if (neko || php || cpp || macro)
 		return "UTF-8";
+	#elseif python
+		return "UTF-32";
 	#else
 		return "UTF-16";
 	#end
 
 	/**
-	   Returns the UTF-8/16 code unit at position `index` of
+	   Returns the UTF-8/16/32 code unit at position `index` of
 	   String `s`.
 	 **/
 	public static inline function codeUnitAt(s : String, index : Int) : Int {
