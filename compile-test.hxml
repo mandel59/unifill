@@ -41,3 +41,9 @@
 -main test.Main
 -cs test/test_cs
 -cmd mono test/test_cs/bin/Main.exe
+
+--next
+
+-main test.Main
+-python test/test.py
+-cmd python3 test/test.py
