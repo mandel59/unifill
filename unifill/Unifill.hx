@@ -26,15 +26,22 @@ class Unifill {
 	}
 
 	/**
-	   Returns the code point at position `index` by code points of String `s`.
+	   Returns the code point as Int at position `index` by code points of String `s`.
 	 **/
-	public static inline function uCodePointAt(s : String, index : Int) : CodePoint {
+	public static inline function uCharCodeAt(s : String, index : Int) : Int {
 	#if (neko || php || cpp || macro)
 		return cast haxe.Utf8.charCodeAt(s, index);
 	#else
 		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
-		return cast InternalEncoding.codePointAt(s, i);
+		return InternalEncoding.codePointAt(s, i);
 	#end
+	}
+
+	/**
+	   Returns the code point at position `index` by code points of String `s`.
+	 **/
+	public static inline function uCodePointAt(s : String, index : Int) : CodePoint {
+		return cast uCharCodeAt(s, index);
 	}
 
 	/**
