@@ -9,6 +9,7 @@ class Main {
 		r.add(new TestUtf16());
 		r.add(new TestUtf32());
 		r.add(new TestInternalEncoding());
+		r.add(new TestInternalEncodingIter());
 		r.add(new TestCodePoint());
 		r.run();
 	}
