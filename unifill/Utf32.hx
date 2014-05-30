@@ -81,7 +81,7 @@ class Utf32 {
     var i = 0;
     var len = this.str.length;
     for (i in 0 ... len) {
-      if (!Unicode.isCodePoint(this.str.charCodeAt(i))) {
+      if (!Unicode.isScalar(this.str.charCodeAt(i))) {
         throw Exception.InvalidCodeUnitSequence(i);
       }
     }
@@ -211,7 +211,7 @@ class Utf32 {
 		var i = 0;
 		var len = this.array.length;
 		while (i < len) {
-			if (!Unicode.isCodePoint(this.array[i++])) {
+			if (!Unicode.isScalar(this.array[i++])) {
 				throw Exception.InvalidCodeUnitSequence(i);
 			}
 		}

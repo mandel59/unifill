@@ -30,7 +30,7 @@ abstract CodePoint(Int) {
 	@:op(A >= B) public static function gte(a : CodePoint, b : CodePoint) : Bool;
 
 	public inline function new(code : Int) : Void {
-		if (!Unicode.isCodePoint(code)) {
+		if (!Unicode.isScalar(code)) {
 			throw Exception.InvalidCodePoint(code);
 		}
 		this = code;

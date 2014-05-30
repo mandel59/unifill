@@ -6,15 +6,15 @@ import unifill.Unicode;
 
 class TestCodePoint extends haxe.unit.TestCase {
 
-	public function test_Unicode_isCodePoint() {
-		assertTrue(Unicode.isCodePoint(Unicode.minCodePoint));
-		assertTrue(Unicode.isCodePoint(Unicode.maxCodePoint));
-		assertFalse(Unicode.isCodePoint(Unicode.minCodePoint - 1));
-		assertFalse(Unicode.isCodePoint(Unicode.maxCodePoint + 1));
-		assertFalse(Unicode.isCodePoint(Unicode.minLowSurrogate));
-		assertFalse(Unicode.isCodePoint(Unicode.maxLowSurrogate));
-		assertFalse(Unicode.isCodePoint(Unicode.minHighSurrogate));
-		assertFalse(Unicode.isCodePoint(Unicode.maxHighSurrogate));
+	public function test_Unicode_isScalar() {
+		assertTrue(Unicode.isScalar(Unicode.minCodePoint));
+		assertTrue(Unicode.isScalar(Unicode.maxCodePoint));
+		assertFalse(Unicode.isScalar(Unicode.minCodePoint - 1));
+		assertFalse(Unicode.isScalar(Unicode.maxCodePoint + 1));
+		assertFalse(Unicode.isScalar(Unicode.minLowSurrogate));
+		assertFalse(Unicode.isScalar(Unicode.maxLowSurrogate));
+		assertFalse(Unicode.isScalar(Unicode.minHighSurrogate));
+		assertFalse(Unicode.isScalar(Unicode.maxHighSurrogate));
 	}
 
 	public function test_CodePoint_cons_and_snoc() {
