@@ -1,7 +1,6 @@
 package test;
 
 import unifill.InternalEncodingIter;
-import unifill.Unicode;
 
 class TestInternalEncodingIter extends haxe.unit.TestCase {
 
