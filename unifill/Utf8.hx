@@ -47,7 +47,7 @@ class Utf8 {
 	   `this`.
 	**/
 	public function codePointAt(index : Int) : Int {
-		return Utf8Impl.decode_code_point(codeUnitAt, index);
+		return Utf8Impl.decode_code_point(length, codeUnitAt, index);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Utf8 {
 		var accessor = codeUnitAt;
 		var i = 0;
 		while (i < len) {
-			Utf8Impl.validate_sequence(len, accessor, i);
+			Utf8Impl.decode_code_point(len, accessor, i);
 			i += codePointWidthAt(i);
 		}
 	}
@@ -178,29 +178,6 @@ private class Utf8Impl {
 			: 1;
 	}
 
-	public static function decode_code_point(accessor : Int -> Int, index : Int) : Int {
-		var c1 = accessor(index);
-		if (c1 < 0x80) {
-			return c1;
-		} else if (c1 < 0xC0) {
-			throw Exception.InvalidCodeUnitSequence(index);
-		} else if (c1 < 0xE0) {
-			var c2 = accessor(index + 1);
-			return ((c1 & 0x3F) << 6) | (c2 & 0x7F);
-		} else if (c1 < 0xF0) {
-			var c2 = accessor(index + 1);
-			var c3 = accessor(index + 2);
-			return ((c1 & 0x1F) << 12) | ((c2 & 0x7F) << 6) | (c3 & 0x7F);
-		} else if (c1 < 0xF8) {
-			var c2 = accessor(index + 1);
-			var c3 = accessor(index + 2);
-			var c4 = accessor(index + 3);
-			return ((c1 & 0x0F) << 18) | ((c2 & 0x7F) << 12) | ((c3 & 0x7F) << 6) | (c4 & 0x7F);
-		} else {
-			throw Exception.InvalidCodeUnitSequence(index);
-		}
-	}
-
 	public static function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
 		if (codePoint <= 0x7F) {
 			addUnit(codePoint);
@@ -221,42 +198,46 @@ private class Utf8Impl {
 		}
 	}
 
-	public static inline function validate_sequence(len : Int, accessor : Int -> Int, index : Int) : Void {
-		if (index >= len)
+	public static function decode_code_point(len : Int, accessor : Int -> Int, index : Int) : Int {
+		var i = index;
+		if (i < 0 || len <= i)
 			throw Exception.InvalidCodeUnitSequence(index);
-		var c1 = accessor(index);
+		var c1 = accessor(i);
 		if (c1 < 0x80) {
-			return;
+			return c1;
 		}
 		if (c1 < 0xC0) {
 			throw Exception.InvalidCodeUnitSequence(index);
 		}
-		if (index >= len - 1)
+		++i;
+		if (i < 0 || len <= i)
 			throw Exception.InvalidCodeUnitSequence(index);
-		var c2 = accessor(index + 1);
+		var c2 = accessor(i);
 		if (c1 < 0xE0) {
 			if ((c1 & 0x1E != 0) && (c2 & 0xC0 == 0x80))
-				return;
+				return ((c1 & 0x3F) << 6) | (c2 & 0x7F);
 			else
 				throw Exception.InvalidCodeUnitSequence(index);
 		}
-		if (index >= len - 2)
+		++i;
+		if (i < 0 || len <= i)
 			throw Exception.InvalidCodeUnitSequence(index);
-		var c3 = accessor(index + 2);
+		var c3 = accessor(i);
 		if (c1 < 0xF0) {
 			if (((c1 & 0x0F != 0) || (c2 & 0x20 != 0)) && (c2 & 0xC0 == 0x80) && (c3 & 0xC0 == 0x80)
 				&& !(c1 == 0xED && 0xA0 <= c2 && c2 <= 0xBF))
-				return;
+				return ((c1 & 0x1F) << 12) | ((c2 & 0x7F) << 6) | (c3 & 0x7F);
 			else
 				throw Exception.InvalidCodeUnitSequence(index);
 		}
-		if (index >= len - 3)
+		++i;
+		if (i < 0 || len <= i)
 			throw Exception.InvalidCodeUnitSequence(index);
-		var c4 = accessor(index + 3);
+		var c4 = accessor(i);
 		if (c1 < 0xF8) {
 			if (((c1 & 0x07 != 0) || (c2 & 0x30 != 0)) && (c2 & 0xC0 == 0x80) && (c3 & 0xC0 == 0x80) && (c4 & 0xC0 == 0x80)
 				&& !((c1 == 0xF4 && c2 > 0x8F) || c1 > 0xF4))
-				return;
+				return ((c1 & 0x0F) << 18) | ((c2 & 0x7F) << 12) | ((c3 & 0x7F) << 6) | (c4 & 0x7F);
 			else
 				throw Exception.InvalidCodeUnitSequence(index);
 		}
@@ -354,7 +335,7 @@ private abstract StringU8(Bytes) {
 		var len = this.length;
 		var cua = function (i) return this.get(i);
 		while (i < len) {
-			var u = Utf8Impl.decode_code_point(cua, i);
+			var u = Utf8Impl.decode_code_point(len, cua, i);
 			buf.add(InternalEncoding.fromCodePoint(u));
 			i += Utf8Impl.code_point_width(codeUnitAt(i));
 		}

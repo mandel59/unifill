@@ -44,7 +44,7 @@ class Utf16 {
 	   `this`.
 	**/
 	public function codePointAt(index : Int) : Int {
-		return Utf16Impl.decode_code_point(codeUnitAt, index);
+		return Utf16Impl.decode_code_point(length, codeUnitAt, index);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Utf16 {
 		var accessor = codeUnitAt;
 		var i = 0;
 		while  (i < len) {
-			Utf16Impl.validate_sequence(len, accessor, i);
+			Utf16Impl.decode_code_point(len, accessor, i);
 			i += codePointWidthAt(i);
 		}
 	}
@@ -171,16 +171,6 @@ private class Utf16Impl {
 		return (!Unicode.isLowSurrogate(c)) ? 1 : 2;
 	}
 
-	public static function decode_code_point(accessor : Int -> Int, index : Int) : Int {
-		var hi = accessor(index);
-		if (Unicode.isHighSurrogate(hi)) {
-			var lo = accessor(index + 1);
-			return Unicode.decodeSurrogate(hi, lo);
-		} else {
-			return hi;
-		}
-	}
-
 	public static function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
 		if (codePoint <= 0xFFFF) {
 			addUnit(codePoint);
@@ -190,18 +180,25 @@ private class Utf16Impl {
 		}
 	}
 
-	public static inline function validate_sequence(len : Int, accessor : Int -> Int, index : Int) : Void {
-		if (index >= len)
+	public static function decode_code_point(len : Int, accessor : Int -> Int, index : Int) : Int {
+		if (index < 0 || len <= index)
 			throw Exception.InvalidCodeUnitSequence(index);
-		var c = accessor(index);
-		if (Unicode.isHighSurrogate(c)) {
-			if (index >= len - 1 || !Unicode.isLowSurrogate(accessor(index + 1)))
+		var hi = accessor(index);
+		if (Unicode.isHighSurrogate(hi)) {
+			if (index + 1 < 0 || len <= index + 1) {
 				throw Exception.InvalidCodeUnitSequence(index);
-		}
-		if (Unicode.isLowSurrogate(c)) {
+			}
+			var lo = accessor(index + 1);
+			if (Unicode.isLowSurrogate(lo)) {
+				return Unicode.decodeSurrogate(hi, lo);
+			} else {
+				throw Exception.InvalidCodeUnitSequence(index);
+			}
+		} else if (Unicode.isLowSurrogate(hi)) {
 			throw Exception.InvalidCodeUnitSequence(index);
+		} else {
+			return hi;
 		}
-		return;
 	}
 
 }
@@ -332,7 +329,7 @@ private abstract StringU16(Array<Int>) {
 		var len = this.length;
 		var cua = function (i) return this[i];
 		while (i < len) {
-			var u = Utf16Impl.decode_code_point(cua, i);
+			var u = Utf16Impl.decode_code_point(len, cua, i);
 			buf.add(InternalEncoding.fromCodePoint(u));
 			i += Utf16Impl.code_point_width(codeUnitAt(i));
 		}
