@@ -1,6 +1,6 @@
 package unifill;
 
-typedef Utf = {
+interface Utf {
 
 	/**
 	   The number of code units in `this`.

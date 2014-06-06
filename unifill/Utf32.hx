@@ -8,7 +8,7 @@ import python.internal.HxBuiltin;
 /**
    Utf32 provides a UTF-32-encoded string.
 **/
-class Utf32 {
+class Utf32 implements Utf {
 
   public static inline function fromCodePoint(codePoint : Int) : Utf32 {
     return new Utf32(String.fromCharCode(codePoint));
@@ -154,7 +154,7 @@ class Utf32 {
 /**
    Utf32 provides a UTF-32-encoded string.
  **/
-class Utf32 {
+class Utf32 implements Utf {
 
 	public static inline function fromCodePoint(codePoint : Int) : Utf32 {
 		return new Utf32([codePoint]);

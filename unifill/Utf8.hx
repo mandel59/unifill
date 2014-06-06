@@ -3,7 +3,7 @@ package unifill;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 
-class Utf8 {
+class Utf8 implements Utf {
 
 	/**
 	   Converts the code point `code` to a character as a Utf8 string.

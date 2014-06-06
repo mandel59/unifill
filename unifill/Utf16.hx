@@ -1,6 +1,6 @@
 package unifill;
 
-class Utf16 {
+class Utf16 implements Utf {
 
 	/**
 	   Converts the code point `code` to a character as a Utf16 string.
