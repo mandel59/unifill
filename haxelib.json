@@ -4,8 +4,8 @@
     "license": "MIT",
     "tags": ["cross", "unicode", "string"],
     "description": "Library for Unicode string support",
-    "version": "0.0.3",
-    "releasenote": "Support Python",
+    "version": "0.1.0",
+    "releasenote": "add class UtfIter\nrename Unicode.isCodePoint to Unicode.isScalar\nadd method Unifill.uCharCodeAt",
     "contributors": ["mandel59"],
     "dependencies": {}
 }
