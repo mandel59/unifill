@@ -211,7 +211,7 @@ private abstract StringU16Buffer(StringBuf) {
 		this = new StringBuf();
 	}
 
-	public inline function addUnit(unit : Int) : Void {
+	public #if !flash inline #end function addUnit(unit : Int) : Void {
 		this.addChar(unit);
 	}
 
@@ -241,7 +241,7 @@ private abstract StringU16(String) {
 
 	public var length(get, never) : Int;
 
-	public inline function codeUnitAt(index : Int) : Int {
+	public #if !flash inline #end function codeUnitAt(index : Int) : Int {
 		return StringTools.fastCodeAt(this, index);
 	}
 
