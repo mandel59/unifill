@@ -16,6 +16,15 @@ class TestUtf8 extends haxe.unit.TestCase {
 		assertEquals("a".code, u.codePointAt(9));
 	}
 
+	public function test_fromCodePoints() {
+		var u = Utf8.fromCodePoints([
+			"𩸽".code, "あ".code, "ë".code, "a".code]);
+		assertEquals("𩸽".code, u.codePointAt(0));
+		assertEquals("あ".code, u.codePointAt(4));
+		assertEquals("ë".code, u.codePointAt(7));
+		assertEquals("a".code, u.codePointAt(9));
+	}
+
 	public function test_toString() {
 		var buf = new BytesBuffer();
 		for (x in [0xf0, 0xa9, 0xb8, 0xbd, 0xe3, 0x81, 0x82, 0xc3, 0xab, 0x61]) {

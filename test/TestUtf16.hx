@@ -21,6 +21,15 @@ class TestUtf16 extends haxe.unit.TestCase {
 		assertEquals("a".code, u.codePointAt(4));
 	}
 
+	public function test_fromCodePoints() {
+		var u = Utf16.fromCodePoints([
+			"𩸽".code, "あ".code, "ë".code, "a".code]);
+		assertEquals("𩸽".code, u.codePointAt(0));
+		assertEquals("あ".code, u.codePointAt(2));
+		assertEquals("ë".code, u.codePointAt(3));
+		assertEquals("a".code, u.codePointAt(4));
+	}
+
 	public function test_toString() {
 		var u = Utf16.fromArray([0xD867, 0xDE3D, 0x3042, 0xEB, 0x61]);
 		assertEquals("𩸽あëa", u.toString());
