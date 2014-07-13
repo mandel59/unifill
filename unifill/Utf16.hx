@@ -7,7 +7,7 @@ class Utf16 implements Utf {
 	**/
 	public static inline function fromCodePoint(codePoint : Int) : Utf16 {
 		var buf = new StringU16Buffer();
-		Utf16Impl.encode_code_point(function (x) return buf.addUnit(x), codePoint);
+		Utf16Impl.encode_code_point(function (x) buf.addUnit(x), codePoint);
 		return new Utf16(buf.getStringU16());
 	}
 
@@ -17,7 +17,7 @@ class Utf16 implements Utf {
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf16 {
 		var buf = new StringU16Buffer();
 		for (c in codePoints) {
-			Utf16Impl.encode_code_point(function (x) return buf.addUnit(x), c);
+			Utf16Impl.encode_code_point(function (x) buf.addUnit(x), c);
 		}
 		return new Utf16(buf.getStringU16());
 	}
@@ -277,7 +277,7 @@ private abstract StringU16Buffer(Array<Int>) {
 		this = [];
 	}
 
-	public #if !cpp inline #end function addUnit(unit : Int) : Void {
+	public inline function addUnit(unit : Int) : Void {
 		this.push(unit);
 	}
 
@@ -291,7 +291,7 @@ private abstract StringU16(Array<Int>) {
 
 	public static function fromString(s : String) : StringU16 {
 		var buf = new StringU16Buffer();
-		var addUnit = function (x) return buf.addUnit(x);
+		var addUnit = function (x) buf.addUnit(x);
 		for (i in new InternalEncodingIter(s, 0, s.length)) {
 			var c = InternalEncoding.codePointAt(s, i);
 			Utf16Impl.encode_code_point(addUnit, c);
