@@ -211,7 +211,7 @@ private abstract StringU16Buffer(StringBuf) {
 		this = new StringBuf();
 	}
 
-	public #if !flash inline #end function addUnit(unit : Int) : Void {
+	public inline function addUnit(unit : Int) : Void {
 		this.addChar(unit);
 	}
 
