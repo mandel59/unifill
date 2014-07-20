@@ -26,3 +26,27 @@ class Main {
   }
 }
 ```
+
+## Iteration
+
+You would write iteration such that:
+
+```haxe
+function f(s : String) : Void {
+  for (i in s.uLength()) {
+    trace(s.uCharAt(i));
+  }
+}
+```
+
+But `f(s)` has order of the square of the length of `s`.
+
+Instead, you can use `uIterator` to let the function be more efficient:
+
+```haxe
+function f(s : String) : Void {
+  for (c in s.uIterator()) {
+    trace(c.toString());
+  }
+}
+```
