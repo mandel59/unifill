@@ -6,7 +6,7 @@ class InternalEncodingBackwardIter {
 	public var beginIndex : Int;
 	public var index : Int;
 
-	public function new(s : String, beginIndex : Int, endIndex : Int) {
+	public inline function new(s : String, beginIndex : Int, endIndex : Int) {
 		string = s;
 		this.beginIndex = beginIndex;
 		this.index = endIndex;
