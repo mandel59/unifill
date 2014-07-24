@@ -51,7 +51,7 @@ class Unifill {
 	 **/
 	public static inline function uIndexOf(s : String, value : String, startIndex : Int = 0) : Int {
 		var index = s.indexOf(value, InternalEncoding.offsetByCodePoints(s, 0, startIndex));
-		return (index >= 0) ? InternalEncoding.codePointCount(s, 0, index) : -1;
+		return if (index >= 0) InternalEncoding.codePointCount(s, 0, index) else -1;
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Unifill {
 		if (startIndex == null)
 			startIndex = s.length - 1;
 		var index = s.lastIndexOf(value, InternalEncoding.offsetByCodePoints(s, 0, startIndex));
-		return (index >= 0) ? InternalEncoding.codePointCount(s, 0, index) : -1;
+		return if (index >= 0) InternalEncoding.codePointCount(s, 0, index) else -1;
 	}
 
 	/**
@@ -83,8 +83,12 @@ class Unifill {
 	   `startIndex` and `length` are counted by code points.
 	 **/
 	public static inline function uSubstr(s : String, startIndex : Int, ?length : Int) : String {
-		var si = (startIndex >= 0) ? InternalEncoding.offsetByCodePoints(s, 0, startIndex) : InternalEncoding.backwardOffsetByCodePoints(s, s.length, -startIndex);
-		var ei = (length == null) ? s.length : (length < 0) ? si : InternalEncoding.offsetByCodePoints(s, si, length);
+		var si = InternalEncoding.offsetByCodePoints(s,
+			if (startIndex >= 0) 0 else s.length,
+			startIndex);
+		var ei = if (length == null) s.length
+			else if (length < 0) si
+			else InternalEncoding.offsetByCodePoints(s, si, length);
 		return s.substring(si, ei);
 	}
 
@@ -94,8 +98,11 @@ class Unifill {
 	   `startIndex` and `endIndex` are counted by code points.
 	 **/
 	public static inline function uSubstring(s : String, startIndex : Int, ?endIndex : Int) : String {
-		var si = (startIndex < 0) ? 0 : InternalEncoding.offsetByCodePoints(s, 0, startIndex);
-		var ei = (endIndex == null) ? s.length : (endIndex < 0) ? 0 : InternalEncoding.offsetByCodePoints(s, 0, endIndex);
+		var si = if (startIndex < 0) 0
+			else InternalEncoding.offsetByCodePoints(s, 0, startIndex);
+		var ei = if (endIndex == null) s.length
+			else if (endIndex < 0) 0
+			else InternalEncoding.offsetByCodePoints(s, 0, endIndex);
 		return s.substring(si, ei);
 	}
 
