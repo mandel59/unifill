@@ -110,11 +110,7 @@ class Unifill {
 	   Returns an iterator of the code points of String `s`.
 	 **/
 	public static inline function uIterator(s : String) : Iterator<CodePoint> {
-		var itr = new InternalEncodingIter(s, 0, s.length);
-		return {
-			hasNext: itr.hasNext,
-			next: function() return cast InternalEncoding.codePointAt(s, itr.next())
-		};
+		return new CodePointIter(s);
 	}
 
 	/**
