@@ -3,7 +3,8 @@ package unifill;
 #if python
 
 import python.Syntax;
-import python.internal.HxBuiltin;
+
+import python.lib.Builtin;
 
 /**
    Utf32 provides a UTF-32-encoded string.
@@ -24,7 +25,7 @@ class Utf32 implements Utf {
 
   public static inline function fromArray(a : Array<Int>) : Utf32 {
     var s : String = Syntax.callField('', "join",
-      Syntax.callField(HxBuiltin, "map", Syntax.field(HxBuiltin, "chr"), a));
+      Syntax.callField(Builtin, "map", Builtin.chr, a));
     return new Utf32(s);
   }
 
