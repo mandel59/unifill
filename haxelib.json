@@ -4,8 +4,8 @@
     "license": "MIT",
     "tags": ["cross", "unicode", "string"],
     "description": "Library for Unicode string support",
-    "version": "0.1.1",
-    "releasenote": "bugfix",
+    "version": "0.2.0",
+    "releasenote": "support python target",
     "contributors": ["mandel59"],
     "dependencies": {}
 }
