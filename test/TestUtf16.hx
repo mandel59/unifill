@@ -3,7 +3,6 @@ package test;
 import unifill.Exception;
 import unifill.Unicode;
 import unifill.Utf16;
-using unifill.UtfTools;
 
 class TestUtf16 extends haxe.unit.TestCase {
 
@@ -52,20 +51,6 @@ class TestUtf16 extends haxe.unit.TestCase {
 		assertTrue(isValid(Utf16.fromArray(a)));
 		assertFalse(isValid(Utf16.fromArray(a.slice(0, 1))));
 		assertFalse(isValid(Utf16.fromArray(a.slice(1))));
-	}
-
-	public function test_compare() {
-		var s0 = Utf16.fromString("𩸽あëa");
-		var s1 = Utf16.fromString("𩸽あëaa");
-		var s2 = Utf16.fromString("𩸽あëb");
-		var s3 = Utf16.fromString("𩸽");
-		var s4 = Utf16.fromString("�");
-		assertTrue(s0.compare(s0) == 0);
-		assertTrue(s0.compare(s1) < 0);
-		assertTrue(s1.compare(s0) > 0);
-		assertTrue(s0.compare(s2) < 0);
-		assertTrue(s2.compare(s0) > 0);
-		assertTrue(s3.compare(s4) < 0);
 	}
 
 }

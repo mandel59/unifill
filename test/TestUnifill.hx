@@ -81,15 +81,6 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals(false, itr.hasNext());
 	}
 
-	public function test_uCompare() {
-		assertTrue("𩸽あëa".uCompare("𩸽あëa") == 0);
-		assertTrue("𩸽あëaa".uCompare("𩸽あëa") > 0);
-		assertTrue("𩸽あëa".uCompare("𩸽あëaa") < 0);
-		assertTrue("𩸽あëa".uCompare("𩸽あëb") < 0);
-		assertTrue("𩸽あëb".uCompare("𩸽あëa") > 0);
-		assertTrue("𩸽".uCompare("�") > 0);
-	}
-
 	public function test_uToString() {
 		assertEquals("𩸽あëa", [cast 0x29E3D, cast 0x03042, cast 0x000EB, cast 0x00061].uToString());
 		assertEquals("𩸽あëa", {iterator: "𩸽あëa".uIterator}.uToString());

@@ -9,143 +9,116 @@ import python.lib.Builtins;
 /**
    Utf32 provides a UTF-32-encoded string.
 **/
-class Utf32 implements Utf {
+abstract Utf32(String) {
 
   public static inline function fromCodePoint(codePoint : Int) : Utf32 {
-    return new Utf32(String.fromCharCode(codePoint));
+	return new Utf32(String.fromCharCode(codePoint));
   }
 
   public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf32 {
-    return fromArray([for (c in codePoints) c]);
+	return fromArray([for (c in codePoints) c]);
   }
 
   public static inline function fromString(string : String) : Utf32 {
-    return new Utf32(string);
+	return new Utf32(string);
   }
 
   public static inline function fromArray(a : Array<Int>) : Utf32 {
-    var s : String = Syntax.callField('', "join",
-      Syntax.callField(Builtins, "map", Builtins.chr, a));
-    return new Utf32(s);
+	var s : String = Syntax.callField('', "join",
+	  Syntax.callField(Builtins, "map", Builtins.chr, a));
+	return new Utf32(s);
   }
 
   public var length(get, never) : Int;
 
   public inline function charAt(index : Int) : Utf32 {
-    return new Utf32(this.str.charAt(index));
+	return new Utf32(this.charAt(index));
   }
 
   public inline function codeUnitAt(index : Int) : Int {
-    return this.str.charCodeAt(index);
+	return this.charCodeAt(index);
   }
 
   public inline function codePointAt(index : Int) : Int {
-    return this.str.charCodeAt(index);
+	return this.charCodeAt(index);
   }
 
   public inline function codePointWidthAt(index : Int) : Int {
-    return 1;
+	return 1;
   }
 
   public inline function codePointWidthBefore(index : Int) : Int {
-    return 1;
+	return 1;
   }
 
   public function codePointCount(beginIndex : Int, endIndex : Int) : Int {
-    return if (endIndex < beginIndex) {
-      0;
-    } else {
-      endIndex - beginIndex;
-    }
+	return if (endIndex < beginIndex) {
+	  0;
+	} else {
+	  endIndex - beginIndex;
+	}
   }
 
   public inline function offsetByCodePoints(index : Int, codePointOffset : Int) : Int {
-    var p = index + codePointOffset;
-    return if (p < 0) {
-      0;
-    } else if (p > this.str.length) {
-      this.str.length;
-    } else {
-      p;
-    }
+	var p = index + codePointOffset;
+	return if (p < 0) {
+	  0;
+	} else if (p > this.length) {
+	  this.length;
+	} else {
+	  p;
+	}
   }
 
   public inline function toString() : String {
-    return this.str;
+	return this;
   }
 
   public inline function toArray() : Array<Int> {
-    return [for(i in 0 ... this.str.length) this.str.charCodeAt(i)];
+	return [for(i in 0 ... this.length) this.charCodeAt(i)];
   }
 
   public function validate() : Void {
-    var i = 0;
-    var len = this.str.length;
-    for (i in 0 ... len) {
-      if (!Unicode.isScalar(this.str.charCodeAt(i))) {
-        throw Exception.InvalidCodeUnitSequence(i);
-      }
-    }
+	var i = 0;
+	var len = this.length;
+	for (i in 0 ... len) {
+	  if (!Unicode.isScalar(this.charCodeAt(i))) {
+		throw Exception.InvalidCodeUnitSequence(i);
+	  }
+	}
   }
 
   @:op(A + B)
   static inline function concat(a : Utf32, b : Utf32) : Utf32 {
-    var s : String = a.str;
-    return new Utf32(a.str + b.str);
-  }
-
-  static inline function cmp(a : Utf32, b : Utf32) : Int {
-    return UtfTools.compare(a, b);
+	return new Utf32(a.toString() + b.toString());
   }
 
   @:op(A == B)
   static inline function eq(a : Utf32, b : Utf32) : Bool {
-    return a.str == b.str;
+	return a.toString() == b.toString();
   }
 
   @:op(A != B)
   static inline function ne(a : Utf32, b : Utf32) : Bool {
-    return !eq(a, b);
-  }
-
-  @:op(A < B)
-  static inline function lt(a : Utf32, b : Utf32) : Bool {
-    return cmp(a, b) < 0;
-  }
-
-  @:op(A <= B)
-  static inline function lte(a : Utf32, b : Utf32) : Bool {
-    return cmp(a, b) <= 0;
-  }
-
-  @:op(A > B)
-  static inline function gt(a : Utf32, b : Utf32) : Bool {
-    return cmp(a, b) > 0;
-  }
-
-  @:op(A >= B)
-  static inline function gte(a : Utf32, b : Utf32) : Bool {
-    return cmp(a, b) >= 0;
+	return !eq(a, b);
   }
 
   @:op(A + B)
   static inline function cons(a : CodePoint, b : Utf32) : Utf32 {
-    return new Utf32(a.toString() + b.str);
+	return new Utf32(a.toString() + b.toString());
   }
 
   @:op(A + B)
   static inline function snoc(a : Utf32, b : CodePoint) : Utf32 {
-    return new Utf32(a.str + b.toString());
+	return new Utf32(a.toString() + b.toString());
   }
 
-  var str : String;
-
   inline function get_length() : Int {
-    return this.str.length;
+	return this.length;
   }
 
   inline function new(s : String) {
-    this.str = s;
+	this = s;
   }
 
 }
@@ -155,14 +128,14 @@ class Utf32 implements Utf {
 /**
    Utf32 provides a UTF-32-encoded string.
  **/
-class Utf32 implements Utf {
+abstract Utf32(Array<Int>) {
 
-	public static inline function fromCodePoint(codePoint : Int) : Utf32 {
-		return new Utf32([codePoint]);
-	}
+  public static inline function fromCodePoint(codePoint : Int) : Utf32 {
+	return new Utf32([codePoint]);
+  }
 
   public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf32 {
-    return fromArray([for (c in codePoints) c]);
+	return fromArray([for (c in codePoints) c]);
   }
 
 	public static inline function fromString(string : String) : Utf32 {
@@ -177,19 +150,19 @@ class Utf32 implements Utf {
 	public var length(get, never) : Int;
 
 	public inline function charAt(index : Int) : Utf32 {
-		if (0 <= index && index < this.array.length) {
-			return new Utf32([this.array[index]]);
+		if (0 <= index && index < this.length) {
+			return new Utf32([this[index]]);
 		} else {
 			return new Utf32([]);
 		}
 	}
 
 	public inline function codeUnitAt(index : Int) : Int {
-		return this.array[index];
+		return this[index];
 	}
 
 	public inline function codePointAt(index : Int) : Int {
-		return this.array[index];
+		return this[index];
 	}
 
 	public inline function codePointWidthAt(index : Int) : Int {
@@ -201,18 +174,18 @@ class Utf32 implements Utf {
 	}
 
 	public inline function toString() : String {
-		return InternalEncoding.fromCodePoints(this.array);
+		return InternalEncoding.fromCodePoints(this);
 	}
 
 	public inline function toArray() : Array<Int> {
-		return this.array.copy();
+		return this.copy();
 	}
 
 	public function validate() : Void {
 		var i = 0;
-		var len = this.array.length;
+		var len = this.length;
 		while (i < len) {
-			if (!Unicode.isScalar(this.array[i++])) {
+			if (!Unicode.isScalar(this[i++])) {
 				throw Exception.InvalidCodeUnitSequence(i);
 			}
 		}
@@ -220,18 +193,22 @@ class Utf32 implements Utf {
 
 	@:op(A + B)
 	static inline function concat(a : Utf32, b : Utf32) : Utf32 {
-		var s : Array<Int> = a.array;
-		return new Utf32(s.concat(b.array));
+		var s : Array<Int> = a.toArray();
+		return new Utf32(s.concat(cast b));
 	}
 
-	static inline function cmp(a : Utf32, b : Utf32) : Int {
-		return UtfTools.compare(a, b);
+	static function eq_array(a : Array<Int>, b : Array<Int>) : Bool {
+		// assert(a.length == b.length);
+		for (i in 0 ... a.length) {
+			if (a[i] != b[i]) return false;
+		}
+		return true;
 	}
 
 	@:op(A == B)
 	static inline function eq(a : Utf32, b : Utf32) : Bool {
-		return if (a.array.length != b.array.length) false;
-		else cmp(a, b) == 0;
+		return if (a.length != b.length) false;
+		else eq_array(cast a, cast b);
 	}
 
 	@:op(A != B)
@@ -239,50 +216,26 @@ class Utf32 implements Utf {
 		return !eq(a, b);
 	}
 
-	@:op(A < B)
-	static inline function lt(a : Utf32, b : Utf32) : Bool {
-		return cmp(a, b) < 0;
-	}
-
-	@:op(A <= B)
-	static inline function lte(a : Utf32, b : Utf32) : Bool {
-		return cmp(a, b) <= 0;
-	}
-
-	@:op(A > B)
-	static inline function gt(a : Utf32, b : Utf32) : Bool {
-		return cmp(a, b) > 0;
-	}
-
-	@:op(A >= B)
-	static inline function gte(a : Utf32, b : Utf32) : Bool {
-		return cmp(a, b) >= 0;
-	}
-
 	@:op(A + B)
 	static inline function cons(a : CodePoint, b : Utf32) : Utf32 {
-		var c : Array<Int> = b.array;
-		var d = c.copy();
-		d.unshift(a.toInt());
-		return new Utf32(d);
+		var c : Array<Int> = b.toArray();
+		c.unshift(a.toInt());
+		return new Utf32(c);
 	}
 
 	@:op(A + B)
 	static inline function snoc(a : Utf32, b : CodePoint) : Utf32 {
-		var c : Array<Int> = a.array;
-		var d = c.copy();
-		d.push(b.toInt());
-		return new Utf32(d);
+		var c : Array<Int> = a.toArray();
+		c.push(b.toInt());
+		return new Utf32(c);
 	}
 
-	var array : Array<Int>;
-
 	inline function get_length() : Int {
-		return this.array.length;
+		return this.length;
 	}
 
 	inline function new(a : Array<Int>) {
-		this.array = a;
+		this = a;
 	}
 
 }

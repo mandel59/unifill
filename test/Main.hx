@@ -10,10 +10,8 @@ class Main {
 		r.add(new TestUtf32());
 		r.add(new TestInternalEncoding());
 		r.add(new TestInternalEncodingIter());
-		r.add(new TestUtfIter());
 		r.add(new TestCodePoint());
 		r.run();
 	}
 
 }
-

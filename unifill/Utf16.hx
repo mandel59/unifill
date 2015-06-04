@@ -1,6 +1,6 @@
 package unifill;
 
-class Utf16 implements Utf {
+abstract Utf16 (StringU16) {
 
 	/**
 	   Converts the code point `code` to a character as a Utf16 string.
@@ -36,7 +36,7 @@ class Utf16 implements Utf {
 	   Returns the UTF-16 code unit at position `index` of `this`.
 	**/
 	public inline function codeUnitAt(index : Int) : Int {
-		return this.str.codeUnitAt(index);
+		return this.codeUnitAt(index);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class Utf16 implements Utf {
 	   `this`.
 	**/
 	public inline function charAt(index : Int) : Utf16 {
-		return new Utf16(this.str.substr(index, codePointWidthAt(index)));
+		return new Utf16(this.substr(index, codePointWidthAt(index)));
 	}
 
 	/**
@@ -102,7 +102,7 @@ class Utf16 implements Utf {
 	   Returns `len` code units of `this`, starting at position pos.
 	**/
 	public inline function substr(index : Int, ?len : Int) : Utf16 {
-		return new Utf16(this.str.substr(index, len));
+		return new Utf16(this.substr(index, len));
 	}
 
 	/**
@@ -112,7 +112,7 @@ class Utf16 implements Utf {
 	   `Exception.InvalidCodeUnitSequence` is throwed.
 	**/
 	public function validate() : Void {
-		var len = this.str.length;
+		var len = this.length;
 		var accessor = codeUnitAt;
 		var i = 0;
 		while  (i < len) {
@@ -122,25 +122,23 @@ class Utf16 implements Utf {
 	}
 
 	public inline function toString() : String {
-		return this.str.toString();
+		return this.toString();
 	}
 
 	public inline function toArray() : Array<Int> {
-		return this.str.toArray();
+		return this.toArray();
 	}
 
-	var str : StringU16;
-
 	inline function new(s : StringU16) {
-		this.str = s;
+		this = s;
 	}
 
 	inline function get_length() : Int {
-		return this.str.length;
+		return this.length;
 	}
 
 	inline function forward_offset_by_code_points(index : Int, codePointOffset : Int) : Int {
-		var len = this.str.length;
+		var len = this.length;
 		var i = 0;
 		while (i < codePointOffset && index < len) {
 			index += codePointWidthAt(index);
