@@ -5,7 +5,7 @@
     "tags": ["cross", "unicode", "string"],
     "description": "Library for Unicode string support",
     "version": "0.3.0",
-    "releasenote": "support python target",
+    "releasenote": "stop using interfaces",
     "contributors": ["mandel59"],
     "dependencies": {}
 }
