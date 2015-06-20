@@ -6,9 +6,13 @@ abstract Utf16 (StringU16) {
 	   Converts the code point `code` to a character as a Utf16 string.
 	**/
 	public static inline function fromCodePoint(codePoint : Int) : Utf16 {
-		var buf = new StringU16Buffer();
-		Utf16Impl.encode_code_point(function (x) buf.addUnit(x), codePoint);
-		return new Utf16(buf.getStringU16());
+		if (codePoint <= 0xFFFF) {
+			return new Utf16(StringU16.fromCodeUnit(codePoint));
+		} else {
+			return new Utf16(StringU16.fromTwoCodeUnits(
+				Unicode.encodeHighSurrogate(codePoint),
+				Unicode.encodeLowSurrogate(codePoint)));
+		}
 	}
 
 	/**
@@ -225,6 +229,14 @@ private abstract StringU16(String) {
 		return new StringU16(s);
 	}
 
+	public static inline function fromCodeUnit(u : Int) : StringU16 {
+		return new StringU16(String.fromCharCode(u));
+	}
+
+	public static inline function fromTwoCodeUnits(u0 : Int, u1 : Int) : StringU16 {
+		return new StringU16(String.fromCharCode(u0) + String.fromCharCode(u1));
+	}
+
 	public static inline function ofArray(a : Array<Int>) : StringU16 {
 		return fromArray(a);
 	}
@@ -295,6 +307,14 @@ private abstract StringU16(Array<Int>) {
 			Utf16Impl.encode_code_point(addUnit, c);
 		}
 		return buf.getStringU16();
+	}
+
+	public static inline function fromCodeUnit(u : Int) : StringU16 {
+		return new StringU16([u]);
+	}
+
+	public static inline function fromTwoCodeUnits(u0 : Int, u1 : Int) : StringU16 {
+		return new StringU16([u0, u1]);
 	}
 
 	public static inline function ofArray(a : Array<Int>) : StringU16 {
