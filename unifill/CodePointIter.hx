@@ -2,9 +2,9 @@ package unifill;
 
 class CodePointIter {
 
-	public var string : String;
-	public var index : Int;
-	public var endIndex : Int;
+	var string : String;
+	var index : Int;
+	var endIndex : Int;
 
 	public inline function new(s : String) {
 		string = s;
