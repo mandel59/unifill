@@ -48,7 +48,7 @@ abstract Utf16 (StringU16) {
 	   `this`.
 	**/
 	public function codePointAt(index : Int) : Int {
-		return Utf16Impl.decode_code_point(length, codeUnitAt, index);
+		return Utf16Impl.decode_code_point(length, function(i) return codeUnitAt(i), index);
 	}
 
 	/**
@@ -87,7 +87,7 @@ abstract Utf16 (StringU16) {
 	   position `index` of `this`.
 	**/
 	public inline function codePointWidthBefore(index : Int) : Int {
-		return Utf16Impl.find_prev_code_point(codeUnitAt, index);
+		return Utf16Impl.find_prev_code_point(function(i) return codeUnitAt(i), index);
 	}
 
 	/**
@@ -117,7 +117,7 @@ abstract Utf16 (StringU16) {
 	**/
 	public function validate() : Void {
 		var len = this.length;
-		var accessor = codeUnitAt;
+		var accessor = function(i) return codeUnitAt(i);
 		var i = 0;
 		while  (i < len) {
 			Utf16Impl.decode_code_point(len, accessor, i);
