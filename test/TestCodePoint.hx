@@ -18,8 +18,8 @@ class TestCodePoint extends haxe.unit.TestCase {
 	}
 
 	public function test_CodePoint_cons_and_snoc() {
-		assertEquals("𩸽あëa", new CodePoint(0x29E3D) + "あëa");
-		assertEquals("あëa𩸽", "あëa" + new CodePoint(0x29E3D));
+		assertEquals("𩸽あëa", CodePoint.fromInt(0x29E3D) + "あëa");
+		assertEquals("あëa𩸽", "あëa" + CodePoint.fromInt(0x29E3D));
 	}
 
 }

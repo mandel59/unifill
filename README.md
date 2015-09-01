@@ -18,7 +18,7 @@ class Main {
     trace("日本語".uLength()); // ==> 3
     trace("русский".uCharAt(5)); // ==> и
     trace("🍺".uCodePointAt(0).toInt()); // ==> 127866
-    trace(new CodePoint(0x1F37B)); // ==> 🍻
+    trace(CodePoint.fromInt(0x1F37B)); // ==> 🍻
     for (c in "♠♡♢♣".uIterator()) {
       trace(c);
       trace(c + 4);

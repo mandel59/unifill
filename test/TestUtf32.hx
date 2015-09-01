@@ -24,7 +24,7 @@ class TestUtf32 extends haxe.unit.TestCase {
 	}
 
 	public function test_cons_and_snoc() {
-		var c = new CodePoint(0x29E3D);
+		var c = CodePoint.fromInt(0x29E3D);
 		assertTrue(Utf32.fromString("𩸽あëa") == c + Utf32.fromString("あëa"));
 		assertTrue(Utf32.fromString("あëa𩸽") == Utf32.fromString("あëa") + c);
 	}
