@@ -41,9 +41,11 @@ abstract CodePoint(Int) {
 		this = code;
 	}
 
+	@:to
 	public inline function toString() : String
 		return InternalEncoding.fromCodePoint(this);
 
+	@:to
 	public inline function toInt() : Int
 		return this;
 }
