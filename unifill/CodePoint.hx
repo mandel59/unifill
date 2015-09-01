@@ -20,7 +20,7 @@ abstract CodePoint(Int) {
 
 	@:op(A + B)
 	public static inline function addInt(a : CodePoint, b : Int) : CodePoint
-		return cast (a.toInt() + b);
+		return CodePoint.fromInt(a.toInt() + b);
 
 	@:op(A - B)
 	public static inline function sub(a : CodePoint, b : CodePoint) : Int
@@ -28,7 +28,7 @@ abstract CodePoint(Int) {
 
 	@:op(A - B)
 	public static inline function subInt(a : CodePoint, b : Int) : CodePoint
-		return cast (a.toInt() - b);
+		return CodePoint.fromInt(a.toInt() - b);
 
 	@:op(A == B) public static function eq(a : CodePoint, b : CodePoint) : Bool;
 	@:op(A != B) public static function ne(a : CodePoint, b : CodePoint) : Bool;
