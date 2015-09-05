@@ -173,7 +173,7 @@ private class Utf16Impl {
 		return (!Unicode.isLowSurrogate(c)) ? 1 : 2;
 	}
 
-	public static function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
+	public static inline function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
 		if (codePoint <= 0xFFFF) {
 			addUnit(codePoint);
 		} else {

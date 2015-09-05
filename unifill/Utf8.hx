@@ -176,7 +176,7 @@ private class Utf8Impl {
 			: 1;
 	}
 
-	public static function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
+	public static inline function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
 		if (codePoint <= 0x7F) {
 			addUnit(codePoint);
 		} else if (codePoint <= 0x7FF) {
