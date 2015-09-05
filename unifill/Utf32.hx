@@ -7,136 +7,140 @@ import python.Syntax;
 import python.lib.Builtins;
 
 /**
-   Utf32 provides a UTF-32-encoded string.
+	 Utf32 provides a UTF-32-encoded string.
 **/
 abstract Utf32(String) {
 
-  public static inline function fromCodePoint(codePoint : Int) : Utf32 {
-	return new Utf32(String.fromCharCode(codePoint));
-  }
-
-  public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf32 {
-	return fromArray([for (c in codePoints) c]);
-  }
-
-  public static inline function fromString(string : String) : Utf32 {
-	return new Utf32(string);
-  }
-
-  public static inline function fromArray(a : Array<Int>) : Utf32 {
-	var s : String = Syntax.callField('', "join",
-	  Syntax.callField(Builtins, "map", Builtins.chr, a));
-	return new Utf32(s);
-  }
-
-  public var length(get, never) : Int;
-
-  public inline function charAt(index : Int) : Utf32 {
-	return new Utf32(this.charAt(index));
-  }
-
-  public inline function codeUnitAt(index : Int) : Int {
-	return this.charCodeAt(index);
-  }
-
-  public inline function codePointAt(index : Int) : Int {
-	return this.charCodeAt(index);
-  }
-
-  public inline function codePointWidthAt(index : Int) : Int {
-	return 1;
-  }
-
-  public inline function codePointWidthBefore(index : Int) : Int {
-	return 1;
-  }
-
-  public function codePointCount(beginIndex : Int, endIndex : Int) : Int {
-	return if (endIndex < beginIndex) {
-	  0;
-	} else {
-	  endIndex - beginIndex;
+	public static inline function fromCodePoint(codePoint : Int) : Utf32 {
+		return new Utf32(String.fromCharCode(codePoint));
 	}
-  }
 
-  public inline function offsetByCodePoints(index : Int, codePointOffset : Int) : Int {
-	var p = index + codePointOffset;
-	return if (p < 0) {
-	  0;
-	} else if (p > this.length) {
-	  this.length;
-	} else {
-	  p;
+	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf32 {
+		return fromArray([for (c in codePoints) c]);
 	}
-  }
 
-  public inline function toString() : String {
-	return this;
-  }
-
-  public inline function toArray() : Array<Int> {
-	return [for(i in 0 ... this.length) this.charCodeAt(i)];
-  }
-
-  public function validate() : Void {
-	var i = 0;
-	var len = this.length;
-	for (i in 0 ... len) {
-	  if (!Unicode.isScalar(this.charCodeAt(i))) {
-		throw Exception.InvalidCodeUnitSequence(i);
-	  }
+	public static inline function fromString(string : String) : Utf32 {
+		return new Utf32(string);
 	}
-  }
 
-  @:op(A + B)
-  static inline function concat(a : Utf32, b : Utf32) : Utf32 {
-	return new Utf32(a.toString() + b.toString());
-  }
+	public static inline function fromArray(a : Array<Int>) : Utf32 {
+		var s : String = Syntax.callField('', "join",
+			Syntax.callField(Builtins, "map", Builtins.chr, a));
+		return new Utf32(s);
+	}
 
-  @:op(A == B)
-  static inline function eq(a : Utf32, b : Utf32) : Bool {
-	return a.toString() == b.toString();
-  }
+	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
+		f(c);
+	}
 
-  @:op(A != B)
-  static inline function ne(a : Utf32, b : Utf32) : Bool {
-	return !eq(a, b);
-  }
+	public var length(get, never) : Int;
 
-  @:op(A + B)
-  static inline function cons(a : CodePoint, b : Utf32) : Utf32 {
-	return new Utf32(a.toString() + b.toString());
-  }
+	public inline function charAt(index : Int) : Utf32 {
+		return new Utf32(this.charAt(index));
+	}
 
-  @:op(A + B)
-  static inline function snoc(a : Utf32, b : CodePoint) : Utf32 {
-	return new Utf32(a.toString() + b.toString());
-  }
+	public inline function codeUnitAt(index : Int) : Int {
+		return this.charCodeAt(index);
+	}
 
-  inline function get_length() : Int {
-	return this.length;
-  }
+	public inline function codePointAt(index : Int) : Int {
+		return this.charCodeAt(index);
+	}
 
-  inline function new(s : String) {
-	this = s;
-  }
+	public inline function codePointWidthAt(index : Int) : Int {
+		return 1;
+	}
+
+	public inline function codePointWidthBefore(index : Int) : Int {
+		return 1;
+	}
+
+	public function codePointCount(beginIndex : Int, endIndex : Int) : Int {
+		return if (endIndex < beginIndex) {
+			0;
+		} else {
+			endIndex - beginIndex;
+		}
+	}
+
+	public inline function offsetByCodePoints(index : Int, codePointOffset : Int) : Int {
+		var p = index + codePointOffset;
+		return if (p < 0) {
+			0;
+		} else if (p > this.length) {
+			this.length;
+		} else {
+			p;
+		}
+	}
+
+	public inline function toString() : String {
+		return this;
+	}
+
+	public inline function toArray() : Array<Int> {
+		return [for(i in 0 ... this.length) this.charCodeAt(i)];
+	}
+
+	public function validate() : Void {
+		var i = 0;
+		var len = this.length;
+		for (i in 0 ... len) {
+			if (!Unicode.isScalar(this.charCodeAt(i))) {
+				throw Exception.InvalidCodeUnitSequence(i);
+			}
+		}
+	}
+
+	@:op(A + B)
+	static inline function concat(a : Utf32, b : Utf32) : Utf32 {
+		return new Utf32(a.toString() + b.toString());
+	}
+
+	@:op(A == B)
+	static inline function eq(a : Utf32, b : Utf32) : Bool {
+		return a.toString() == b.toString();
+	}
+
+	@:op(A != B)
+	static inline function ne(a : Utf32, b : Utf32) : Bool {
+		return !eq(a, b);
+	}
+
+	@:op(A + B)
+	static inline function cons(a : CodePoint, b : Utf32) : Utf32 {
+		return new Utf32(a.toString() + b.toString());
+	}
+
+	@:op(A + B)
+	static inline function snoc(a : Utf32, b : CodePoint) : Utf32 {
+		return new Utf32(a.toString() + b.toString());
+	}
+
+	inline function get_length() : Int {
+		return this.length;
+	}
+
+	inline function new(s : String) {
+		this = s;
+	}
 
 }
 
 #else
 
 /**
-   Utf32 provides a UTF-32-encoded string.
+	 Utf32 provides a UTF-32-encoded string.
  **/
 abstract Utf32(Array<Int>) {
 
-  public static inline function fromCodePoint(codePoint : Int) : Utf32 {
-	return new Utf32([codePoint]);
-  }
+	public static inline function fromCodePoint(codePoint : Int) : Utf32 {
+		return new Utf32([codePoint]);
+	}
 
-  public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf32 {
-	return fromArray([for (c in codePoints) c]);
-  }
+	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf32 {
+		return fromArray([for (c in codePoints) c]);
+	}
 
 	public static inline function fromString(string : String) : Utf32 {
 		var u = [for (c in new InternalEncodingIter(string, 0, string.length)) InternalEncoding.codePointAt(string, c)];
@@ -145,6 +149,10 @@ abstract Utf32(Array<Int>) {
 
 	public static inline function fromArray(a : Array<Int>) : Utf32 {
 		return new Utf32(a.copy());
+	}
+
+	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
+		f(c);
 	}
 
 	public var length(get, never) : Int;
