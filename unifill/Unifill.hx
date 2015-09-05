@@ -140,6 +140,9 @@ class Unifill {
 	public static inline function uToString(codePoints : Iterable<CodePoint>) : String
 		return InternalEncoding.fromCodePoints(cast codePoints);
 
+	/**
+	   Appends the character `c` to StringBuf `sb`.
+	 **/
 	public static inline function uAddChar(sb : StringBuf, c : CodePoint) : Void {
 		#if (neko || php || cpp || macro)
 			Utf8.encodeWith(function(c) sb.addChar(c), c.toInt());
