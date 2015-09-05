@@ -86,4 +86,13 @@ class TestUnifill extends haxe.unit.TestCase {
 		assertEquals("𩸽あëa", {iterator: "𩸽あëa".uIterator}.uToString());
 	}
 
+	public function test_uAddChar() {
+		var sb = new StringBuf();
+		sb.uAddChar(cast 0x29E3D);
+		sb.uAddChar(cast 0x03042);
+		sb.uAddChar(cast 0x000EB);
+		sb.uAddChar(cast 0x00061);
+		assertEquals("𩸽あëa", sb.toString());
+	}
+
 }

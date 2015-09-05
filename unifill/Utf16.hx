@@ -34,6 +34,10 @@ abstract Utf16 (StringU16) {
 		return new Utf16(StringU16.fromArray(a));
 	}
 
+	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
+		Utf16Impl.encode_code_point(f, c);
+	}
+
 	public var length(get, never) : Int;
 
 	/**

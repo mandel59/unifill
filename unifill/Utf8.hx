@@ -10,7 +10,7 @@ abstract Utf8(StringU8) {
 	**/
 	public static inline function fromCodePoint(codePoint : Int) : Utf8 {
 		var buf = new BytesBuffer();
-		Utf8Impl.encode_code_point(buf.addByte, codePoint);
+		Utf8Impl.encode_code_point(function(c) buf.addByte(c), codePoint);
 		return new Utf8(StringU8.ofBytes(buf.getBytes()));
 	}
 
@@ -20,7 +20,7 @@ abstract Utf8(StringU8) {
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf8 {
 		var buf = new BytesBuffer();
 		for (c in codePoints) {
-			Utf8Impl.encode_code_point(buf.addByte, c);
+			Utf8Impl.encode_code_point(function(c) buf.addByte(c), c);
 		}
 		return new Utf8(StringU8.ofBytes(buf.getBytes()));
 	}
@@ -31,6 +31,10 @@ abstract Utf8(StringU8) {
 
 	public static inline function fromBytes(b : Bytes) : Utf8 {
 		return new Utf8(StringU8.fromBytes(b));
+	}
+
+	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
+		Utf8Impl.encode_code_point(f, c);
 	}
 
 	public var length(get, never) : Int;

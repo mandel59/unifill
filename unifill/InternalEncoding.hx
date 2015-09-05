@@ -134,4 +134,8 @@ class InternalEncoding {
 		}
 	}
 
+	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
+		UtfX.encodeWith(f, c);
+	}
+
 }

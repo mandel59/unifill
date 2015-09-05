@@ -140,4 +140,15 @@ class Unifill {
 	public static inline function uToString(codePoints : Iterable<CodePoint>) : String
 		return InternalEncoding.fromCodePoints(cast codePoints);
 
+	public static inline function uAddChar(sb : StringBuf, c : CodePoint) : Void {
+		#if (neko || php || cpp || macro)
+			Utf8.encodeWith(function(c) sb.addChar(c), c.toInt());
+		#elseif python
+			// Utf32.encodeWith(function(c) sb.addChar(c), c.toInt());
+			sb.addChar(c);
+		#else
+			Utf16.encodeWith(function(c) sb.addChar(c), c.toInt());
+		#end
+	}
+
 }
