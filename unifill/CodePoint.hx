@@ -5,7 +5,7 @@ abstract CodePoint(Int) {
 	@:from
 	public static inline function fromInt(code : Int) : CodePoint {
 		if (!Unicode.isScalar(code)) {
-			throw Exception.InvalidCodePoint(code);
+			throw new Exception.InvalidCodePoint(code);
 		}
 		return new CodePoint(code);
 	}

@@ -124,13 +124,8 @@ class InternalEncoding {
 		try {
 			validate(s);
 			return true;
-		} catch (e : Exception) {
-			switch (e) {
-			case InvalidCodeUnitSequence(index):
-				return false;
-			default:
-				throw e;
-			}
+		} catch (e : Exception.InvalidCodeUnitSequence) {
+			return false;
 		}
 	}
 

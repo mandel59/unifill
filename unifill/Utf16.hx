@@ -188,20 +188,20 @@ private class Utf16Impl {
 
 	public static function decode_code_point(len : Int, accessor : Int -> Int, index : Int) : Int {
 		if (index < 0 || len <= index)
-			throw Exception.InvalidCodeUnitSequence(index);
+			throw new Exception.InvalidCodeUnitSequence(index);
 		var hi = accessor(index);
 		if (Unicode.isHighSurrogate(hi)) {
 			if (index + 1 < 0 || len <= index + 1) {
-				throw Exception.InvalidCodeUnitSequence(index);
+				throw new Exception.InvalidCodeUnitSequence(index);
 			}
 			var lo = accessor(index + 1);
 			if (Unicode.isLowSurrogate(lo)) {
 				return Unicode.decodeSurrogate(hi, lo);
 			} else {
-				throw Exception.InvalidCodeUnitSequence(index);
+				throw new Exception.InvalidCodeUnitSequence(index);
 			}
 		} else if (Unicode.isLowSurrogate(hi)) {
-			throw Exception.InvalidCodeUnitSequence(index);
+			throw new Exception.InvalidCodeUnitSequence(index);
 		} else {
 			return hi;
 		}

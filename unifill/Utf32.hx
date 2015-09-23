@@ -87,7 +87,7 @@ abstract Utf32(String) {
 		var len = this.length;
 		for (i in 0 ... len) {
 			if (!Unicode.isScalar(this.charCodeAt(i))) {
-				throw Exception.InvalidCodeUnitSequence(i);
+				throw new Exception.InvalidCodeUnitSequence(i);
 			}
 		}
 	}
@@ -194,7 +194,7 @@ abstract Utf32(Array<Int>) {
 		var len = this.length;
 		while (i < len) {
 			if (!Unicode.isScalar(this[i++])) {
-				throw Exception.InvalidCodeUnitSequence(i);
+				throw new Exception.InvalidCodeUnitSequence(i);
 			}
 		}
 	}

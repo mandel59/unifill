@@ -196,54 +196,54 @@ private class Utf8Impl {
 			addUnit(0x80 | ((codePoint >> 6) & 0x3F));
 			addUnit(0x80 | (codePoint & 0x3F));
 		} else {
-			throw Exception.InvalidCodePoint(codePoint);
+			throw new Exception.InvalidCodePoint(codePoint);
 		}
 	}
 
 	public static function decode_code_point(len : Int, accessor : Int -> Int, index : Int) : Int {
 		var i = index;
 		if (i < 0 || len <= i)
-			throw Exception.InvalidCodeUnitSequence(index);
+			throw new Exception.InvalidCodeUnitSequence(index);
 		var c1 = accessor(i);
 		if (c1 < 0x80) {
 			return c1;
 		}
 		if (c1 < 0xC0) {
-			throw Exception.InvalidCodeUnitSequence(index);
+			throw new Exception.InvalidCodeUnitSequence(index);
 		}
 		++i;
 		if (i < 0 || len <= i)
-			throw Exception.InvalidCodeUnitSequence(index);
+			throw new Exception.InvalidCodeUnitSequence(index);
 		var c2 = accessor(i);
 		if (c1 < 0xE0) {
 			if ((c1 & 0x1E != 0) && (c2 & 0xC0 == 0x80))
 				return ((c1 & 0x3F) << 6) | (c2 & 0x7F);
 			else
-				throw Exception.InvalidCodeUnitSequence(index);
+				throw new Exception.InvalidCodeUnitSequence(index);
 		}
 		++i;
 		if (i < 0 || len <= i)
-			throw Exception.InvalidCodeUnitSequence(index);
+			throw new Exception.InvalidCodeUnitSequence(index);
 		var c3 = accessor(i);
 		if (c1 < 0xF0) {
 			if (((c1 & 0x0F != 0) || (c2 & 0x20 != 0)) && (c2 & 0xC0 == 0x80) && (c3 & 0xC0 == 0x80)
 				&& !(c1 == 0xED && 0xA0 <= c2 && c2 <= 0xBF))
 				return ((c1 & 0x1F) << 12) | ((c2 & 0x7F) << 6) | (c3 & 0x7F);
 			else
-				throw Exception.InvalidCodeUnitSequence(index);
+				throw new Exception.InvalidCodeUnitSequence(index);
 		}
 		++i;
 		if (i < 0 || len <= i)
-			throw Exception.InvalidCodeUnitSequence(index);
+			throw new Exception.InvalidCodeUnitSequence(index);
 		var c4 = accessor(i);
 		if (c1 < 0xF8) {
 			if (((c1 & 0x07 != 0) || (c2 & 0x30 != 0)) && (c2 & 0xC0 == 0x80) && (c3 & 0xC0 == 0x80) && (c4 & 0xC0 == 0x80)
 				&& !((c1 == 0xF4 && c2 > 0x8F) || c1 > 0xF4))
 				return ((c1 & 0x0F) << 18) | ((c2 & 0x7F) << 12) | ((c3 & 0x7F) << 6) | (c4 & 0x7F);
 			else
-				throw Exception.InvalidCodeUnitSequence(index);
+				throw new Exception.InvalidCodeUnitSequence(index);
 		}
-		throw Exception.InvalidCodeUnitSequence(index);
+		throw new Exception.InvalidCodeUnitSequence(index);
 	}
 
 }
