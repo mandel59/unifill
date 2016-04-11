@@ -1,6 +1,6 @@
 package unifill;
 
-#if (neko || php || cpp || macro)
+#if (neko || php || cpp || lua || macro)
 	private typedef UtfX = Utf8;
 #elseif python
 	private typedef UtfX = Utf32;
@@ -20,7 +20,7 @@ class InternalEncoding {
 	public static var internalEncoding(get, never) : String;
 
 	static inline function get_internalEncoding() : String
-	#if (neko || php || cpp || macro)
+	#if (neko || php || cpp || lua || macro)
 		return "UTF-8";
 	#elseif python
 		return "UTF-32";

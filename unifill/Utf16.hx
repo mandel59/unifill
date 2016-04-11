@@ -209,7 +209,7 @@ private class Utf16Impl {
 
 }
 
-#if !(neko || php || cpp || macro || python)
+#if !(neko || php || cpp || lua || macro || python)
 
 private abstract StringU16Buffer(StringBuf) {
 

@@ -34,3 +34,7 @@
 --next
 -python test/test.py
 -cmd python3 test/test.py
+
+--next
+-lua test/test.lua
+-cmd lua test/test.lua

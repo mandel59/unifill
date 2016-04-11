@@ -248,7 +248,7 @@ private class Utf8Impl {
 
 }
 
-#if (neko || php || cpp || macro)
+#if (neko || php || cpp || lua || macro)
 
 private abstract StringU8(String) {
 

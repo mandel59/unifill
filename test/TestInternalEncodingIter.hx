@@ -7,7 +7,7 @@ class TestInternalEncodingIter extends haxe.unit.TestCase {
 	public function test_InternalEncodingIter() {
 		var s = "𩸽あëa";
 		var itr = new InternalEncodingIter(s, 0, s.length);
-	#if (neko || php || cpp || macro)
+	#if (neko || php || cpp || lua || macro)
 		var index = [0, 4, 7, 9, 10];
 	#elseif python
 		var index = [0, 1, 2, 3, 4];

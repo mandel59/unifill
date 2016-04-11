@@ -17,7 +17,7 @@ class TestInternalEncoding extends haxe.unit.TestCase {
 	}
 
 	public function test_isValidString() {
-	#if (neko || php || cpp || macro)
+	#if (neko || php || cpp || lua || macro)
 		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
 		assertFalse(InternalEncoding.isValidString("𩸽\xe3\x81ëa"));
 		assertFalse(InternalEncoding.isValidString("\xc0"));

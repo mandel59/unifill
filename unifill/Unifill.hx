@@ -29,7 +29,7 @@ class Unifill {
 	   Returns the code point as Int at position `index` by code points of String `s`.
 	 **/
 	public static inline function uCharCodeAt(s : String, index : Int) : Int {
-	#if (neko || php || cpp || macro)
+	#if (neko || php || cpp || lua || macro)
 		return cast haxe.Utf8.charCodeAt(s, index);
 	#else
 		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
@@ -144,7 +144,7 @@ class Unifill {
 	   Appends the character `c` to StringBuf `sb`.
 	 **/
 	public static inline function uAddChar(sb : StringBuf, c : CodePoint) : Void {
-		#if (neko || php || cpp || macro)
+		#if (neko || php || cpp || lua || macro)
 			Utf8.encodeWith(function(c) sb.addChar(c), c.toInt());
 		#elseif python
 			// Utf32.encodeWith(function(c) sb.addChar(c), c.toInt());
