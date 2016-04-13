@@ -4,8 +4,8 @@
     "license": "MIT",
     "tags": ["cross", "unicode", "string"],
     "description": "Library for Unicode string support",
-    "version": "0.4.0",
-    "releasenote": "Unifill.uAddChar",
+    "version": "0.4.1",
+    "releasenote": "Add Lua support",
     "contributors": ["mandel59"],
     "dependencies": {}
 }
