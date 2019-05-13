@@ -206,7 +206,6 @@ abstract Utf32(Array<Int>) {
 	}
 
 	static function eq_array(a : Array<Int>, b : Array<Int>) : Bool {
-		// assert(a.length == b.length);
 		for (i in 0 ... a.length) {
 			if (a[i] != b[i]) return false;
 		}

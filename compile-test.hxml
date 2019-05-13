@@ -1,10 +1,17 @@
--main test.Main
+-lib hx3compat
+
 -dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
 --each
 
 --interp
 
 --next
+
 -neko test/test.n
 -cmd neko test/test.n
 
@@ -16,25 +23,25 @@
 -js test/test.js
 -cmd node test/test.js
 
---next
--swf test/test.swf
-
---next
--java test/test_java
--cmd java -jar test/test_java/Main.jar
-
---next
--cpp test/test_cpp
--cmd test/test_cpp/Main
-
---next
--cs test/test_cs
--cmd mono test/test_cs/bin/Main.exe
+#--next
+#-swf test/test.swf
+#
+#--next
+#-java test/test_java
+#-cmd java -jar test/test_java/Main.jar
+#
+#--next
+#-cpp test/test_cpp
+#-cmd test/test_cpp/Main
+#
+#--next
+#-cs test/test_cs
+#-cmd mono test/test_cs/bin/Main.exe
 
 --next
 -python test/test.py
--cmd python3 test/test.py
+-cmd python test/test.py
 
---next
--lua test/test.lua
--cmd lua test/test.lua
+#--next
+#-lua test/test.lua
+#-cmd lua test/test.lua

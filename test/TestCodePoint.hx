@@ -1,10 +1,37 @@
 package test;
 
-import unifill.CodePoint;
-import unifill.Exception;
 import unifill.Unicode;
+import unifill.CodePoint;
+import unifill.CodePointIter;
 
 class TestCodePoint extends haxe.unit.TestCase {
+
+	public function test_CodePoint_fromInt() {
+		assertEquals("🍻", CodePoint.fromInt(0x1F37B));
+	}
+
+	public function test_CodePointIterator() {
+		var itr = new CodePointIter("𩸽あëa");
+		assertEquals(true, itr.hasNext());
+		assertEquals(0x29E3D, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(0x03042, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(0x000EB, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(0x00061, itr.next());
+		assertEquals(false, itr.hasNext());
+
+		var itr = new CodePointIter("x\u3042\u{12345}\u{20A0}");
+		assertEquals(true, itr.hasNext());
+		assertEquals(120, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(12354, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(74565, itr.next());
+		assertEquals(true, itr.hasNext());
+		assertEquals(8352, itr.next());
+	}
 
 	public function test_Unicode_isScalar() {
 		assertTrue(Unicode.isScalar(Unicode.minCodePoint));

@@ -61,10 +61,8 @@ treating variable-length encoding without considering which encoding form
 is practically used.
 
 These methods index by code units. That is, the value of
-`InternalEncoding.charAt("эюя", 2)` varies depending the tar
-environment: the UTF-8 environments (Haxe macro, C++, Neko, PHP and
-Lua) give `"ю"`, while the UTF-16 environments (Flash, C#, Java and
-JavaScript) and the UTF-32 environment (Python) give `"я"`.
+`InternalEncoding.charAt("эюя", 2)` varies depending the target
+environment: the Neko target gives `"ю"`, while the other targets give `"я"`.
 
 `InternalEncoding.codePointWidthAt` returns the number of code units
 the code point is consist of, so any platform gives `"ю"` for the
@@ -73,3 +71,7 @@ following expression:
 ```haxe
 InternalEncoding.charAt("эюя", InternalEncoding.codePointWidthAt("эюя", 0))
 ```
+
+## Target Notes
+
+Some targets will break, silently on some targets, when trying handle the Null character.

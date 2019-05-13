@@ -3,6 +3,7 @@ package test;
 class Main {
 
 	static function main() {
+		trace( unifill.InternalEncoding.internalEncoding );
 		var r = new haxe.unit.TestRunner();
 		r.add(new TestUnifill());
 		r.add(new TestUtf8());
