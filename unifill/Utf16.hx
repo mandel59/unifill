@@ -34,6 +34,11 @@ abstract Utf16 (StringU16) {
 		for (i in 0...a.length) na[i] = a[i];
 		var s = java.NativeString.valueOf(na);
 		var r = new Utf16(StringU16.fromString(s));
+		#elseif cs
+		var na:cs.NativeArray<cs.types.Char16> = new cs.NativeArray(a.length);
+		for (i in 0...a.length) na[i] = a[i];
+		var s = new cs.system.String(na);
+		var r = new Utf16(StringU16.fromString(cast s));
 		#else
 		var r = new Utf16(StringU16.fromArray(a));
 		#end
@@ -215,7 +220,7 @@ private class Utf16Impl {
 
 }
 
-#if (js || hl || java)
+#if (js || hl || java || cs)
 @:forward private abstract StringU16Buffer(BytesBuffer) {
 	public inline function new() this = new BytesBuffer();
 
