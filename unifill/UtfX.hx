@@ -4,7 +4,7 @@ package unifill;
 	typedef UtfX = Utf8;
 #elseif (utf32 || python)
 	typedef UtfX = Utf32;
-#elseif (utf16 || hl || js)
+#elseif (utf16 || hl || js || java)
 	typedef UtfX = Utf16;
 #else
 	typedef UtfX = Utf16;

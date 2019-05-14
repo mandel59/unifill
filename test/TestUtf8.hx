@@ -11,7 +11,7 @@ class TestUtf8 extends haxe.unit.TestCase {
 		var u = Utf8.fromString("𩸽あëa");
 		// I expect having different indexes for different platforms is wrong.
 		var index = 
-		#if (neko || js || python || hl)
+		#if (neko || js || python || hl || java)
 		[0, 4, 7, 9];
 		#else
 		[0, 1, 2, 3];
@@ -26,7 +26,7 @@ class TestUtf8 extends haxe.unit.TestCase {
 		var codepoints = ["𩸽".code, "あ".code, "ë".code, "a".code];
 		var u = Utf8.fromCodePoints(codepoints);
 		var index = 
-		#if (neko || js || python || hl)
+		#if (neko || js || python || hl || java)
 		[0, 4, 7, 9];
 		#else
 		[0, 1, 2, 3];

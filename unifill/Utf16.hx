@@ -29,7 +29,15 @@ abstract Utf16 (StringU16) {
 	}
 
 	public static inline function fromArray(a : Array<Int>) : Utf16 {
-		return new Utf16(StringU16.fromArray(a));
+		#if java
+		var na:java.NativeArray<java.types.Char16> = new java.NativeArray(a.length);
+		for (i in 0...a.length) na[i] = a[i];
+		var s = java.NativeString.valueOf(na);
+		var r = new Utf16(StringU16.fromString(s));
+		#else
+		var r = new Utf16(StringU16.fromArray(a));
+		#end
+		return r;
 	}
 
 	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
@@ -207,7 +215,7 @@ private class Utf16Impl {
 
 }
 
-#if (js || hl)
+#if (js || hl || java)
 @:forward private abstract StringU16Buffer(BytesBuffer) {
 	public inline function new() this = new BytesBuffer();
 
