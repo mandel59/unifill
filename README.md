@@ -74,4 +74,5 @@ InternalEncoding.charAt("эюя", InternalEncoding.codePointWidthAt("эюя", 0)
 
 ## Target Notes
 
-Some targets will break, silently on some targets, when trying handle the Null character.
+- Some targets will break, silently on some targets, when trying handle the Null character.
+- The Lua target has not been tested.
