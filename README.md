@@ -2,6 +2,10 @@
 
 Shim your code to support Unicode across all platforms.
 
+| Php | Python | Java | C# | Js/Node | Interp | Neko | HashLink | Lua | CPP |
+| - | -| - | - | - | -| - | - | - | - |
+| ✅ | ✅     | ✅  | ✅ | ✅     | ✅ | ✅  | ✅       | ➖ | ➖ |
+
 ## Usage
 
 The declaration `using unifill.Unifill;` introduces the methods whose
