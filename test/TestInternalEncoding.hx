@@ -29,11 +29,15 @@ class TestInternalEncoding extends haxe.unit.TestCase {
 	}
 
 	public function test_isValidString() {
-	#if (!target.unicode)
+	#if (python || target.utf16)
+		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
+		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minHighSurrogate)));
+		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minLowSurrogate)));
+	#else
 		function fromArrayOfBytes(a : Array<Int>) {
-			var b = new StringBuf();
-			for (c in a) b.addChar(c);
-			return b.toString();
+			var bytes = haxe.io.Bytes.alloc(a.length);
+			for (i in 0 ... a.length) bytes.set(i, a[i]);
+			return bytes.toString();
 		}
 		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
 		/* "\xe3\x81" is an ill-formed UTF-8 sequence (missing a trailed code unit) */
@@ -54,10 +58,6 @@ class TestInternalEncoding extends haxe.unit.TestCase {
 		assertTrue(InternalEncoding.isValidString(fromArrayOfBytes([0xf4, 0x8f, 0xbf, 0xbf])));
 		/* "\xf4\x90\x80\x80" is U+110000 in UTF-8, but out of Unicode, so now obsolete (an ill-formed UTF-8 sequence) */
 		assertFalse(InternalEncoding.isValidString(fromArrayOfBytes([0xf4, 0x90, 0x80, 0x80])));
-	#else
-		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
-		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minHighSurrogate)));
-		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minLowSurrogate)));
 	#end
 	}
 
