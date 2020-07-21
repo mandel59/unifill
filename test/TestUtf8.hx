@@ -35,38 +35,51 @@ class TestUtf8 extends haxe.unit.TestCase {
 
 	public function test_validate() {
 		function a2b(a : Array<Int>) : Bytes {
-			var buf = new BytesBuffer();
-			for (x in a) {
-				buf.addByte(x);
+			var buf = Bytes.alloc(a.length);
+			for (i in 0...a.length) {
+				buf.set(i, a[i]);
 			}
-			return buf.getBytes();
+			return buf;
 		}
-		function isValid(s : Utf8) : Bool {
+		function isValid(b : Bytes) : Bool {
 			try {
+				var s = Utf8.fromBytes(b); // some targets natively implement proper check and throw exceptions here
 				s.validate();
 			} catch (e : Exception) {
 				return false;
 			}
 			return true;
 		}
-		var true_cases =
-			[[0xf0, 0xa9, 0xb8, 0xbd, 0xe3, 0x81, 0x82, 0xc3, 0xab, 0x61],
-			 [0xed, 0x9f, 0xbf],
-			 [0xee, 0x80, 0x80],
-			 [0xf4, 0x8f, 0xbf, 0xbf]];
-		var false_cases =
-			[[0xf0, 0xa9, 0xb8, 0xbd, 0xe3, 0x81, 0xc3, 0xab, 0x61],
-			 [0xc0, 0xaf],
-			 [0xed, 0xa0, 0x80],
-			 [0xed, 0xbf, 0xbf],
-			 [0xf4, 0x90, 0x80, 0x80]];
+		/* each of false_cases is well-formed UTF-8 */
+		var true_cases = [
+			/* "𩸽あëa" */
+			[0xf0, 0xa9, 0xb8, 0xbd, 0xe3, 0x81, 0x82, 0xc3, 0xab, 0x61],
+			/* U+D7FF */
+			[0xed, 0x9f, 0xbf],
+			/* U+E000 */
+			[0xee, 0x80, 0x80],
+			/* U+10FFFF, the last code point of Unicode. */
+			[0xf4, 0x8f, 0xbf, 0xbf]
+		];
+		/* each of false_cases is ill-formed UTF-8 */
+		var false_cases = [
+			/* a byte is missing */
+			[0xf0, 0xa9, 0xb8, 0xbd, 0xe3, 0x81, /* 0x82 is missing here */ 0xc3, 0xab, 0x61],
+			/* redundant UTF-8 encoding of "/" U+002F SOLIDUS */
+			[0xc0, 0xaf],
+			/* U+D800, which is the first high (lead) surrogate, in WTF-8.
+				See: https://simonsapin.github.io/wtf-8/#surrogate-byte-sequence */
+			[0xed, 0xa0, 0x80],
+			/* U+DFFF, which is the last low (trail) surrogate, in WTF-8. */
+			[0xed, 0xbf, 0xbf],
+			/* U+110000, the first code point of Plane 17 in obsolete UCS-4. */
+			[0xf4, 0x90, 0x80, 0x80]
+		];
 		for (c in true_cases) {
-			var u = Utf8.fromBytes(a2b(c));
-			assertTrue(isValid(u));
+			assertTrue(isValid(a2b(c)));
 		}
 		for (c in false_cases) {
-			var u = Utf8.fromBytes(a2b(c));
-			assertFalse(isValid(u));
+			assertFalse(isValid(a2b(c)));
 		}
 	}
 

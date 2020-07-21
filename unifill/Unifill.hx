@@ -17,8 +17,8 @@ class Unifill {
 	   Returns the character at position `index` by code points of String `s`.
 	 **/
 	public static inline function uCharAt(s : String, index : Int) : String {
-	#if (neko || php || cpp)
-		return InternalEncoding.fromCodePoint(haxe.Utf8.charCodeAt(s, index));
+	#if (target.unicode && !target.utf16)
+		return InternalEncoding.fromCodePoint(s.charCodeAt(index));
 	#else
 		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
 		return InternalEncoding.charAt(s, i);
@@ -29,8 +29,8 @@ class Unifill {
 	   Returns the code point as Int at position `index` by code points of String `s`.
 	 **/
 	public static inline function uCharCodeAt(s : String, index : Int) : Int {
-	#if (neko || php || cpp || lua || macro)
-		return cast haxe.Utf8.charCodeAt(s, index);
+	#if (target.unicode && !target.utf16)
+		return s.charCodeAt(index);
 	#else
 		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
 		return InternalEncoding.codePointAt(s, i);
@@ -62,7 +62,12 @@ class Unifill {
 	public static inline function uLastIndexOf(s : String, value : String, ?startIndex) : Int {
 		if (startIndex == null)
 			startIndex = s.length - 1;
-		var index = s.lastIndexOf(value, InternalEncoding.offsetByCodePoints(s, 0, startIndex));
+		var offset = InternalEncoding.offsetByCodePoints(s, 0, startIndex);
+		#if (eval || macro)
+		// Eval needs to clamp like the majority of targets.
+		if (offset >= s.length) offset = s.length - 1;
+		#end
+		var index = s.lastIndexOf(value, offset);
 		return if (index >= 0) InternalEncoding.codePointCount(s, 0, index) else -1;
 	}
 
@@ -144,13 +149,10 @@ class Unifill {
 	   Appends the character `c` to StringBuf `sb`.
 	 **/
 	public static inline function uAddChar(sb : StringBuf, c : CodePoint) : Void {
-		#if (neko || php || cpp || lua || macro)
-			Utf8.encodeWith(function(c) sb.addChar(c), c.toInt());
-		#elseif python
-			// Utf32.encodeWith(function(c) sb.addChar(c), c.toInt());
+		#if (target.unicode)
 			sb.addChar(c);
 		#else
-			Utf16.encodeWith(function(c) sb.addChar(c), c.toInt());
+			InternalEncoding.encodeWith(function(c) sb.addChar(c), c.toInt());
 		#end
 	}
 

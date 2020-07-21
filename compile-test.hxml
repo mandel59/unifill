@@ -1,40 +1,52 @@
--main test.Main
+-lib hx3compat
+
 -dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
 --each
 
 --interp
 
 --next
--neko test/test.n
--cmd neko test/test.n
+
+-neko test/build/test.n
+-cmd neko test/build/test.n
 
 --next
--php test/test_php
--cmd php test/test_php/index.php
+-php test/build/test_php
+-cmd php test/build/test_php/index.php
 
 --next
--js test/test.js
--cmd node test/test.js
+-js test/build/test.js
+-cmd node test/build/test.js
+
+#--next
+#-swf test/build/test.swf
 
 --next
--swf test/test.swf
+-java test/build/test_java
+-cmd java -jar test/build/test_java/Main.jar
 
 --next
--java test/test_java
--cmd java -jar test/test_java/Main.jar
+-java test/build/test_jvm
+-D jvm
+-cmd java -jar test/build/test_jvm/Main.jar
 
 --next
--cpp test/test_cpp
--cmd test/test_cpp/Main
+-cpp test/build/test_cpp
+-cmd test/build/test_cpp/Main
 
 --next
--cs test/test_cs
--cmd mono test/test_cs/bin/Main.exe
+-cs test/build/test_cs
+-cmd mono test/build/test_cs/bin/Main.exe
 
 --next
--python test/test.py
--cmd python3 test/test.py
+-python test/build/test.py
+-cmd python test/build/test.py
 
 --next
--lua test/test.lua
--cmd lua test/test.lua
+-lua test/build/test.lua
+-cmd lua test/build/test.lua

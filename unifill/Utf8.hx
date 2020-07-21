@@ -3,6 +3,12 @@ package unifill;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 
+/**
+	Abstract class of "UTF-8" string
+
+	Its interface is UTF-8, not its internal representation is.
+	All indices are measured in code units.
+**/
 abstract Utf8(StringU8) {
 
 	/**
@@ -10,7 +16,7 @@ abstract Utf8(StringU8) {
 	**/
 	public static inline function fromCodePoint(codePoint : Int) : Utf8 {
 		var buf = new BytesBuffer();
-		Utf8Impl.encode_code_point(function(c) buf.addByte(c), codePoint);
+		Utf8Impl.encode_code_point(buf.addByte, codePoint);
 		return new Utf8(StringU8.ofBytes(buf.getBytes()));
 	}
 
@@ -20,7 +26,7 @@ abstract Utf8(StringU8) {
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf8 {
 		var buf = new BytesBuffer();
 		for (c in codePoints) {
-			Utf8Impl.encode_code_point(function(c) buf.addByte(c), c);
+			Utf8Impl.encode_code_point(buf.addByte, c);
 		}
 		return new Utf8(StringU8.ofBytes(buf.getBytes()));
 	}
@@ -31,10 +37,6 @@ abstract Utf8(StringU8) {
 
 	public static inline function fromBytes(b : Bytes) : Utf8 {
 		return new Utf8(StringU8.fromBytes(b));
-	}
-
-	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
-		Utf8Impl.encode_code_point(f, c);
 	}
 
 	public var length(get, never) : Int;
@@ -51,7 +53,7 @@ abstract Utf8(StringU8) {
 	   `this`.
 	**/
 	public function codePointAt(index : Int) : Int {
-		return Utf8Impl.decode_code_point(length, function(i) return codeUnitAt(i), index);
+		return Utf8Impl.decode_code_point(length, codeUnitAt, index);
 	}
 
 	/**
@@ -90,7 +92,7 @@ abstract Utf8(StringU8) {
 	   position `index` of `this`.
 	**/
 	public inline function codePointWidthBefore(index : Int) : Int {
-		return Utf8Impl.find_prev_code_point(function(i) return codeUnitAt(i), index);
+		return Utf8Impl.find_prev_code_point(codeUnitAt, index);
 	}
 
 	/**
@@ -120,7 +122,7 @@ abstract Utf8(StringU8) {
 	**/
 	public function validate() : Void {
 		var len = this.length;
-		var accessor = function(i) return codeUnitAt(i);
+		var accessor = codeUnitAt;
 		var i = 0;
 		while (i < len) {
 			Utf8Impl.decode_code_point(len, accessor, i);
@@ -161,6 +163,10 @@ abstract Utf8(StringU8) {
 			++count;
 		}
 		return index;
+	}
+
+	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
+		Utf8Impl.encode_code_point(f, c);
 	}
 
 }
@@ -248,9 +254,9 @@ private class Utf8Impl {
 
 }
 
-#if (neko || php || cpp || lua || macro)
+#if (!target.unicode)
 
-private abstract StringU8(String) {
+@:forward private abstract StringU8(String) {
 
 	public static inline function fromString(s : String) : StringU8 {
 		return new StringU8(s);

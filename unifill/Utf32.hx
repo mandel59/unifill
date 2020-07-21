@@ -1,10 +1,6 @@
 package unifill;
 
-#if python
-
-import python.Syntax;
-
-import python.lib.Builtins;
+#if (target.unicode && !target.utf16)
 
 /**
 	 Utf32 provides a UTF-32-encoded string.
@@ -16,7 +12,10 @@ abstract Utf32(String) {
 	}
 
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf32 {
-		return fromArray([for (c in codePoints) c]);
+		var b = new StringBuf();
+		for (c in codePoints) b.addChar(c);
+		var s : String = b.toString();
+		return new Utf32(s);
 	}
 
 	public static inline function fromString(string : String) : Utf32 {
@@ -24,9 +23,7 @@ abstract Utf32(String) {
 	}
 
 	public static inline function fromArray(a : Array<Int>) : Utf32 {
-		var s : String = Syntax.callField('', "join",
-			Syntax.callField(Builtins, "map", Builtins.chr, a));
-		return new Utf32(s);
+		return fromCodePoints(a);
 	}
 
 	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
@@ -83,6 +80,8 @@ abstract Utf32(String) {
 	}
 
 	public function validate() : Void {
+	#if (python || target.utf16)
+		// Check if all code points are valid Unicode scalar values.
 		var i = 0;
 		var len = this.length;
 		for (i in 0 ... len) {
@@ -90,6 +89,12 @@ abstract Utf32(String) {
 				throw new Exception.InvalidCodeUnitSequence(i);
 			}
 		}
+	#else
+		// In case of lua, php and eval, Strings mimic fixed-width encoding (like UTF-32),
+		// but they are internally UTF-8.
+		// Here Utf8#validate is used instead.
+		Utf8.fromBytes(haxe.io.Bytes.ofString(this)).validate();
+	#end
 	}
 
 	@:op(A + B)
@@ -206,7 +211,6 @@ abstract Utf32(Array<Int>) {
 	}
 
 	static function eq_array(a : Array<Int>, b : Array<Int>) : Bool {
-		// assert(a.length == b.length);
 		for (i in 0 ... a.length) {
 			if (a[i] != b[i]) return false;
 		}

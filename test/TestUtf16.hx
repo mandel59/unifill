@@ -53,4 +53,8 @@ class TestUtf16 extends haxe.unit.TestCase {
 		assertFalse(isValid(Utf16.fromArray(a.slice(1))));
 	}
 
+	public function test_SurrogatePairs() {
+		assertEquals("𝌆", Utf16.fromCodePoints([0xD834, 0xDF06]).toString());
+	}
+
 }

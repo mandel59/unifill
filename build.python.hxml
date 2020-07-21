@@ -1,0 +1,10 @@
+-lib hx3compat
+
+-dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
+-python test/build/test.py
+-cmd python test/build/test.py

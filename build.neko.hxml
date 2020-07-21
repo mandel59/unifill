@@ -1,0 +1,10 @@
+-lib hx3compat
+
+-dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
+-neko test/build/test.n
+-cmd neko test/build/test.n

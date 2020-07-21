@@ -1,0 +1,10 @@
+-lib hx3compat
+
+-dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
+-cs test/build/test_cs
+-cmd mono test/build/test_cs/bin/Main.exe

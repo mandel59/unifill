@@ -1,0 +1,10 @@
+-lib hx3compat
+
+-dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
+-hl test/build/test.hl
+-cmd hl test/build/test.hl

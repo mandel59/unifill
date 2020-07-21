@@ -1,0 +1,4 @@
+.git
+*.dockerfile
+run-test-on-docker.sh
+test/build

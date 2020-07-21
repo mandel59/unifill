@@ -1,0 +1,3 @@
+-D hx3compat=1.0.3
+# @install: lix --silent download "gh://github.com/haxefoundation/hx3compat#91edf63bfd82d0d110a51c96028905b962c7968e" into hx3compat/1.0.3/github/91edf63bfd82d0d110a51c96028905b962c7968e
+-cp ${HAXE_LIBCACHE}/hx3compat/1.0.3/github/91edf63bfd82d0d110a51c96028905b962c7968e/std

@@ -1,0 +1,11 @@
+-lib hx3compat
+
+-dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
+#-D jvm
+-java test/build/test_java
+-cmd java -jar test/build/test_java/Main.jar

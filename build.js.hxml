@@ -1,0 +1,11 @@
+-lib hx3compat
+-lib hxnodejs
+
+-dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
+-js test/build/test.js
+-cmd node test/build/test.js

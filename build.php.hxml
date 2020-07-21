@@ -1,0 +1,10 @@
+-lib hx3compat
+
+-dce full
+-D eval-stack
+-D analyzer-optimize
+
+-main test.Main
+
+-php test/build/test_php
+-cmd php test/build/test_php/index.php
