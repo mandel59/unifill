@@ -1,13 +1,5 @@
 package unifill;
 
-#if (neko || php || cpp || lua || macro)
-	private typedef UtfX = Utf8;
-#elseif python
-	private typedef UtfX = Utf32;
-#else
-	private typedef UtfX = Utf16;
-#end
-
 /**
    InternalEncoding provides primitive API to deal with strings across
    all platforms. You should consider adopting Unifill before this.
@@ -20,10 +12,12 @@ class InternalEncoding {
 	public static var internalEncoding(get, never) : String;
 
 	static inline function get_internalEncoding() : String
-	#if (neko || php || cpp || lua || macro)
+	#if (utf8 || neko || php || cpp || lua || eval || macro)
 		return "UTF-8";
-	#elseif python
+	#elseif (utf32 || python)
 		return "UTF-32";
+	#elseif (utf16 || hl || js)
+		return 'UTF-16';
 	#else
 		return "UTF-16";
 	#end
