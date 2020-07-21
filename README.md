@@ -2,9 +2,9 @@
 
 Shim your code to support Unicode across all platforms.
 
-| PHP | Python | Java | C# | JS/Node | Interp | Neko | HashLink | Lua | C++ |
-| -   | -      | -    | -  | -       | -      | -    | -        | -   | -   |
-| ✅ | ✅     | ✅   | ✅ | ✅     | ✅    | ✅  | ✅       | ➖  | ➖ |
+| PHP | Python | Java | JVM | C# | JS/Node | Interp | Neko | HashLink | Lua | C++ |
+| -   | -      | -    | -   | -  | -       | -      | -    | -        | -   | -   |
+| ✅ | ✅     | ✅  | ❌  | ✅ | ✅     | ✅    | ✅  | ✅       | ✅  | ❌ |
 
 ## Usage
 
