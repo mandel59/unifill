@@ -7,5 +7,5 @@
 
 -main test.Main
 
--js test/test.js
--cmd node test/test.js
+-js test/build/test.js
+-cmd node test/build/test.js

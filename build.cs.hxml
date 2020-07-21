@@ -6,5 +6,5 @@
 
 -main test.Main
 
--cs test/test_cs
--cmd mono test/test_cs/bin/Main.exe
+-cs test/build/test_cs
+-cmd mono test/build/test_cs/bin/Main.exe

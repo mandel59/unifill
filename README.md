@@ -2,9 +2,9 @@
 
 Shim your code to support Unicode across all platforms.
 
-| Php | Python | Java | C# | Js/Node | Interp | Neko | HashLink | Lua | CPP |
-| - | -| - | - | - | -| - | - | - | - |
-| ✅ | ✅     | ✅  | ✅ | ✅     | ✅ | ✅  | ✅       | ➖ | ➖ |
+| PHP | Python | Java | C# | JS/Node | Interp | Neko | HashLink | Lua | C++ |
+| -   | -      | -    | -  | -       | -      | -    | -        | -   | -   |
+| ✅ | ✅     | ✅   | ✅ | ✅     | ✅    | ✅  | ✅       | ➖  | ➖ |
 
 ## Usage
 
@@ -79,4 +79,3 @@ InternalEncoding.charAt("эюя", InternalEncoding.codePointWidthAt("эюя", 0)
 ## Target Notes
 
 - Some targets will break, silently on some targets, when trying handle the Null character.
-- The Lua target has not been tested.

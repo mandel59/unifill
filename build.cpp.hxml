@@ -6,5 +6,5 @@
 
 -main test.Main
 
--cpp test/test_cpp
--cmd test/test_cpp/Main
+-cpp test/build/test_cpp
+-cmd test/build/test_cpp/Main

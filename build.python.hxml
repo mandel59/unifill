@@ -6,5 +6,5 @@
 
 -main test.Main
 
--python test/test.py
--cmd python test/test.py
+-python test/build/test.py
+-cmd python test/build/test.py

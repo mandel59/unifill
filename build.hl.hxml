@@ -6,5 +6,5 @@
 
 -main test.Main
 
--hl test/test.hl
--cmd hl test/test.hl
+-hl test/build/test.hl
+-cmd hl test/build/test.hl

@@ -6,5 +6,5 @@
 
 -main test.Main
 
--lua test/test.lua
--cmd lua test/test.lua
+-lua test/build/test.lua
+-cmd lua test/build/test.lua

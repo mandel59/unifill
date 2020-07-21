@@ -6,5 +6,5 @@
 
 -main test.Main
 
--neko test/test.n
--cmd neko test/test.n
+-neko test/build/test.n
+-cmd neko test/build/test.n

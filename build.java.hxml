@@ -7,5 +7,5 @@
 -main test.Main
 
 #-D jvm
--java test/test_java
--cmd java -jar test/test_java/Main.jar
+-java test/build/test_java
+-cmd java -jar test/build/test_java/Main.jar
