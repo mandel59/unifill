@@ -13,6 +13,10 @@ RUN bash /opt/setup_node_14.x
 RUN apt-get install -y nodejs
 RUN npm install --global lix
 
+RUN apt-get install -y libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev build-essential
+ADD https://api.github.com/repos/HaxeFoundation/hashlink/tarball/1.11 /opt/hashlink.tgz
+RUN mkdir -p /opt && cd /opt && tar -xzvf /opt/hashlink.tgz && cd HaxeFoundation-hashlink-cd26913 && make && make install && ldconfig
+
 WORKDIR /opt/unifill
 
 ADD .haxerc /opt/unifill/.haxerc
