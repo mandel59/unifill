@@ -49,17 +49,29 @@ class TestUtf8 extends haxe.unit.TestCase {
 			}
 			return true;
 		}
+		/* each of false_cases is well-formed UTF-8 */
 		var true_cases = [
+			/* "𩸽あëa" */
 			[0xf0, 0xa9, 0xb8, 0xbd, 0xe3, 0x81, 0x82, 0xc3, 0xab, 0x61],
+			/* U+D7FF */
 			[0xed, 0x9f, 0xbf],
+			/* U+E000 */
 			[0xee, 0x80, 0x80],
+			/* U+10FFFF, the last code point of Unicode. */
 			[0xf4, 0x8f, 0xbf, 0xbf]
 		];
+		/* each of false_cases is ill-formed UTF-8 */
 		var false_cases = [
-			[0xf0, 0xa9, 0xb8, 0xbd, 0xe3, 0x81, 0xc3, 0xab, 0x61],
+			/* a byte is missing */
+			[0xf0, 0xa9, 0xb8, 0xbd, 0xe3, 0x81, /* 0x82 is missing here */ 0xc3, 0xab, 0x61],
+			/* redundant UTF-8 encoding of "/" U+002F SOLIDUS */
 			[0xc0, 0xaf],
+			/* U+D800, which is the first high (lead) surrogate, in WTF-8.
+				See: https://simonsapin.github.io/wtf-8/#surrogate-byte-sequence */
 			[0xed, 0xa0, 0x80],
+			/* U+DFFF, which is the last low (trail) surrogate, in WTF-8. */
 			[0xed, 0xbf, 0xbf],
+			/* U+110000, the first code point of Plane 17 in obsolete UCS-4. */
 			[0xf4, 0x90, 0x80, 0x80]
 		];
 		for (c in true_cases) {
