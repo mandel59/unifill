@@ -12,7 +12,10 @@ abstract Utf32(String) {
 	}
 
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf32 {
-		return fromArray([for (c in codePoints) c]);
+		var b = new StringBuf();
+		for (c in codePoints) b.addChar(c);
+		var s : String = b.toString();
+		return new Utf32(s);
 	}
 
 	public static inline function fromString(string : String) : Utf32 {
@@ -20,10 +23,7 @@ abstract Utf32(String) {
 	}
 
 	public static inline function fromArray(a : Array<Int>) : Utf32 {
-		var b = new StringBuf();
-		for (c in a) b.addChar(c);
-		var s : String = b.toString();
-		return new Utf32(s);
+		return fromCodePoints(a);
 	}
 
 	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
