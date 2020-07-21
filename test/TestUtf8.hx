@@ -41,8 +41,9 @@ class TestUtf8 extends haxe.unit.TestCase {
 			}
 			return buf;
 		}
-		function isValid(s : Utf8) : Bool {
+		function isValid(b : Bytes) : Bool {
 			try {
+				var s = Utf8.fromBytes(b); // some targets natively implement proper check and throw exceptions here
 				s.validate();
 			} catch (e : Exception) {
 				return false;
@@ -75,12 +76,10 @@ class TestUtf8 extends haxe.unit.TestCase {
 			[0xf4, 0x90, 0x80, 0x80]
 		];
 		for (c in true_cases) {
-			var u = Utf8.fromBytes(a2b(c));
-			assertTrue(isValid(u));
+			assertTrue(isValid(a2b(c)));
 		}
 		for (c in false_cases) {
-			var u = Utf8.fromBytes(a2b(c));
-			assertFalse(isValid(u));
+			assertFalse(isValid(a2b(c)));
 		}
 	}
 
