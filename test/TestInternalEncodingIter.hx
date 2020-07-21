@@ -7,12 +7,12 @@ class TestInternalEncodingIter extends haxe.unit.TestCase {
 	public function test_InternalEncodingIter() {
 		var s = "𩸽あëa";
 		var itr = new InternalEncodingIter(s, 0, s.length);
-	#if neko
+	#if (!target.unicode)
 		var index = [0, 4, 7, 9, 10];
-	#elseif (python || php || cpp || lua || eval || macro)
-		var index = [0, 1, 2, 3, 4];
-	#else
+	#elseif (target.utf16)
 		var index = [0, 2, 3, 4, 5];
+	#else
+		var index = [0, 1, 2, 3, 4];
 	#end
 		assertTrue(itr.hasNext());
 		assertEquals(index[0], itr.next());

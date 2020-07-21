@@ -12,14 +12,12 @@ class InternalEncoding {
 	public static var internalEncoding(get, never) : String;
 
 	static inline function get_internalEncoding() : String
-	#if (utf8 || neko || php || cpp || lua || eval || macro)
+	#if (!target.unicode)
 		return "UTF-8";
-	#elseif (utf32 || python)
-		return "UTF-32";
-	#elseif (utf16 || hl || js)
-		return 'UTF-16';
-	#else
+	#elseif (target.utf16)
 		return "UTF-16";
+	#else
+		return "UTF-32";
 	#end
 
 	/**

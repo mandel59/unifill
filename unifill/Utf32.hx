@@ -1,10 +1,6 @@
 package unifill;
 
-#if python
-
-import python.Syntax;
-
-import python.lib.Builtins;
+#if (target.unicode && !target.utf16)
 
 /**
 	 Utf32 provides a UTF-32-encoded string.
@@ -24,8 +20,9 @@ abstract Utf32(String) {
 	}
 
 	public static inline function fromArray(a : Array<Int>) : Utf32 {
-		var s : String = Syntax.callField('', "join",
-			Syntax.callField(Builtins, "map", Builtins.chr, a));
+		var b = new StringBuf();
+		for (c in a) b.addChar(c);
+		var s : String = b.toString();
 		return new Utf32(s);
 	}
 

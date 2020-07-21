@@ -165,6 +165,10 @@ abstract Utf8(StringU8) {
 		return index;
 	}
 
+	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
+		Utf8Impl.encode_code_point(f, c);
+	}
+
 }
 
 private class Utf8Impl {
@@ -250,7 +254,7 @@ private class Utf8Impl {
 
 }
 
-#if (neko || php || cpp || lua || eval || macro)
+#if (!target.unicode)
 
 @:forward private abstract StringU8(String) {
 

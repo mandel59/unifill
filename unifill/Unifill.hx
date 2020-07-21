@@ -17,7 +17,7 @@ class Unifill {
 	   Returns the character at position `index` by code points of String `s`.
 	 **/
 	public static inline function uCharAt(s : String, index : Int) : String {
-	#if (php || cpp || lua || eval || macro)
+	#if (target.unicode && !target.utf16)
 		return InternalEncoding.fromCodePoint(s.charCodeAt(index));
 	#else
 		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
@@ -29,7 +29,7 @@ class Unifill {
 	   Returns the code point as Int at position `index` by code points of String `s`.
 	 **/
 	public static inline function uCharCodeAt(s : String, index : Int) : Int {
-	#if (php || cpp || lua || eval || macro)
+	#if (target.unicode && !target.utf16)
 		return s.charCodeAt(index);
 	#else
 		var i = InternalEncoding.offsetByCodePoints(s, 0, index);
@@ -149,16 +149,10 @@ class Unifill {
 	   Appends the character `c` to StringBuf `sb`.
 	 **/
 	public static inline function uAddChar(sb : StringBuf, c : CodePoint) : Void {
-		#if neko
-			Utf8.encodeWith(function(c) sb.addChar(c), c.toInt());
-		#elseif (php || cpp || lua || eval || macro)
-			sb.addChar(c);
-		#elseif (python || hl || js)
-			// Utf32.encodeWith(function(c) sb.addChar(c), c.toInt());
+		#if (target.unicode)
 			sb.addChar(c);
 		#else
-			//Utf16.encodeWith(function(c) sb.addChar(c), c.toInt());
-			sb.addChar(c);
+			InternalEncoding.encodeWith(function(c) sb.addChar(c), c.toInt());
 		#end
 	}
 

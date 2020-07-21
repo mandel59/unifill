@@ -220,7 +220,7 @@ private class Utf16Impl {
 
 }
 
-#if (js || hl || java || cs)
+#if (target.utf16)
 @:forward private abstract StringU16Buffer(BytesBuffer) {
 	public inline function new() this = new BytesBuffer();
 
