@@ -6,4 +6,5 @@
 
 -main test.Main
 
---interp
+-lua test/test.lua
+-cmd lua test/test.lua

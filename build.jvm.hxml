@@ -6,4 +6,6 @@
 
 -main test.Main
 
---interp
+-D jvm
+-java test/test_java
+-cmd java -jar test/test_java/Main.jar
