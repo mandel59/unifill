@@ -16,7 +16,7 @@ abstract Utf8(StringU8) {
 	**/
 	public static inline function fromCodePoint(codePoint : Int) : Utf8 {
 		var buf = new BytesBuffer();
-		Utf8Impl.encode_code_point(function(c) buf.addByte(c), codePoint);
+		Utf8Impl.encode_code_point(buf.addByte, codePoint);
 		return new Utf8(StringU8.ofBytes(buf.getBytes()));
 	}
 
@@ -26,7 +26,7 @@ abstract Utf8(StringU8) {
 	public static inline function fromCodePoints(codePoints : Iterable<Int>) : Utf8 {
 		var buf = new BytesBuffer();
 		for (c in codePoints) {
-			Utf8Impl.encode_code_point(function(c) buf.addByte(c), c);
+			Utf8Impl.encode_code_point(buf.addByte, c);
 		}
 		return new Utf8(StringU8.ofBytes(buf.getBytes()));
 	}
@@ -37,10 +37,6 @@ abstract Utf8(StringU8) {
 
 	public static inline function fromBytes(b : Bytes) : Utf8 {
 		return new Utf8(StringU8.fromBytes(b));
-	}
-
-	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
-		Utf8Impl.encode_code_point(f, c);
 	}
 
 	public var length(get, never) : Int;
@@ -57,11 +53,7 @@ abstract Utf8(StringU8) {
 	   `this`.
 	**/
 	public function codePointAt(index : Int) : Int {
-		#if (php || cpp || lua || eval || macro)
-		return this.charCodeAt(index);
-		#else
-		return Utf8Impl.decode_code_point(length, i -> codeUnitAt(i), index);
-		#end
+		return Utf8Impl.decode_code_point(length, codeUnitAt, index);
 	}
 
 	/**
@@ -91,12 +83,8 @@ abstract Utf8(StringU8) {
 	   `index` of `this`.
 	**/
 	public inline function codePointWidthAt(index : Int) : Int {
-		#if (php || cpp || lua || eval || macro)
-		return 1;
-		#else
 		var c = codeUnitAt(index);
 		return Utf8Impl.code_point_width(c);
-		#end
 	}
 
 	/**
@@ -104,11 +92,7 @@ abstract Utf8(StringU8) {
 	   position `index` of `this`.
 	**/
 	public inline function codePointWidthBefore(index : Int) : Int {
-		#if (php || cpp || lua || eval || macro)
-		return 1;
-		#else
-		return Utf8Impl.find_prev_code_point(function(i) return codeUnitAt(i), index);
-		#end
+		return Utf8Impl.find_prev_code_point(codeUnitAt, index);
 	}
 
 	/**
@@ -137,20 +121,12 @@ abstract Utf8(StringU8) {
 	   `Exception.InvalidCodeUnitSequence` is throwed.
 	**/
 	public function validate() : Void {
-		#if !neko
-		var b = toBytes();
-		var len = b.length;
-		var accessor = b.get;
-		var _codePointWidthAt = i -> Utf8Impl.code_point_width(accessor(i));
-		#else
 		var len = this.length;
 		var accessor = codeUnitAt;
-		var _codePointWidthAt = i -> codePointWidthAt(i);
-		#end
 		var i = 0;
 		while (i < len) {
 			Utf8Impl.decode_code_point(len, accessor, i);
-			i += _codePointWidthAt(i);
+			i += codePointWidthAt(i);
 		}
 	}
 
@@ -283,11 +259,11 @@ private class Utf8Impl {
 	}
 
 	public static inline function ofBytes(b : Bytes) : StringU8 {
-		return new StringU8(b.getString(0, b.length, RawNative));
+		return new StringU8(b.toString());
 	}
 
 	public static inline function fromBytes(b : Bytes) : StringU8 {
-		return new StringU8(b.getString(0, b.length, RawNative));
+		return new StringU8(b.toString());
 	}
 
 	public var length(get, never) : Int;
@@ -305,7 +281,7 @@ private class Utf8Impl {
 	}
 
 	public inline function toBytes() : Bytes {
-		return Bytes.ofString(this, RawNative);
+		return Bytes.ofString(this);
 	}
 
 	inline function new(s : String) {
@@ -364,7 +340,7 @@ private abstract StringU8(Bytes) {
 		var cua = function (i) return this.get(i);
 		while (i < len) {
 			var u = Utf8Impl.decode_code_point(len, cua, i);
-			buf.addChar(u);
+			buf.add(InternalEncoding.fromCodePoint(u));
 			i += Utf8Impl.code_point_width(codeUnitAt(i));
 		}
 		return buf.toString();
