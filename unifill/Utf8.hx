@@ -3,6 +3,12 @@ package unifill;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 
+/**
+	Abstract class of "UTF-8" string
+
+	Its interface is UTF-8, not its internal representation is.
+	All indices are measured in code units.
+**/
 abstract Utf8(StringU8) {
 
 	/**

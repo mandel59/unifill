@@ -9,32 +9,19 @@ class TestUtf8 extends haxe.unit.TestCase {
 
 	public function test_fromString() {
 		var u = Utf8.fromString("𩸽あëa");
-		// I expect having different indexes for different platforms is wrong.
-		var index = 
-		#if (neko || js || python || hl || java || cs)
-		[0, 4, 7, 9];
-		#else
-		[0, 1, 2, 3];
-		#end
-		assertEquals("𩸽".code, u.codePointAt(index[0]));
-		assertEquals("あ".code, u.codePointAt(index[1]));
-		assertEquals("ë".code, u.codePointAt(index[2]));
-		assertEquals("a".code, u.codePointAt(index[3]));
+		assertEquals("𩸽".code, u.codePointAt(0));
+		assertEquals("あ".code, u.codePointAt(4));
+		assertEquals("ë".code, u.codePointAt(7));
+		assertEquals("a".code, u.codePointAt(9));
 	}
 
 	public function test_fromCodePoints() {
-		var codepoints = ["𩸽".code, "あ".code, "ë".code, "a".code];
-		var u = Utf8.fromCodePoints(codepoints);
-		var index = 
-		#if (neko || js || python || hl || java || cs)
-		[0, 4, 7, 9];
-		#else
-		[0, 1, 2, 3];
-		#end
-		assertEquals("𩸽".code, u.codePointAt(index[0]));
-		assertEquals("あ".code, u.codePointAt(index[1]));
-		assertEquals("ë".code, u.codePointAt(index[2]));
-		assertEquals("a".code, u.codePointAt(index[3]));
+		var u = Utf8.fromCodePoints([
+			"𩸽".code, "あ".code, "ë".code, "a".code]);
+		assertEquals("𩸽".code, u.codePointAt(0));
+		assertEquals("あ".code, u.codePointAt(4));
+		assertEquals("ë".code, u.codePointAt(7));
+		assertEquals("a".code, u.codePointAt(9));
 	}
 
 	public function test_toString() {
