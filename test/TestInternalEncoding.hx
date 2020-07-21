@@ -29,55 +29,36 @@ class TestInternalEncoding extends haxe.unit.TestCase {
 	}
 
 	public function test_isValidString() {
+	#if (!target.unicode)
+		function fromArrayOfBytes(a : Array<Int>) {
+			var b = new StringBuf();
+			for (c in a) b.addChar(c);
+			return b.toString();
+		}
 		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
-		#if (neko || php || cpp || lua || eval || macro)
-		/**
-			The original test, below, originally passed.
-			`assertFalse(InternalEncoding.isValidString("𩸽\xe3\x81ëa"));`
-
-			The updated code for Haxe 4+, fails. As far as I'm aware, this **is**
-			a valid string... I'm likely missing something...
-			`assertFalse(InternalEncoding.isValidString("𩸽\u00e3\u0081ëa"));`
-
-			Same as above applies for each commented/non commented pairs that
-			follow.
-		**/
-		//assertFalse(InternalEncoding.isValidString("𩸽\u00e3\u0081ëa"));
-		assertTrue(InternalEncoding.isValidString("𩸽\u00e3\u0081ëa"));	// �ãëa
-
-		//assertFalse(InternalEncoding.isValidString("\u00c0"));
-		assertTrue(InternalEncoding.isValidString("\u00c0"));	// À
-
-		//assertFalse(InternalEncoding.isValidString("/\u00c0\u00ae./"));
-		assertTrue(InternalEncoding.isValidString("/\u00c0\u00ae./")); // /À®./
-
-		assertTrue(InternalEncoding.isValidString("\u00ed\u009f\u00bf"));
-		
-		//assertFalse(InternalEncoding.isValidString("\u00ed\u00a0\u0080"));
-		assertTrue(InternalEncoding.isValidString("\u00ed\u00a0\u0080"));	// í 
-
-		//assertFalse(InternalEncoding.isValidString("\u00ed\u00bf\u00bf"));
-		assertTrue(InternalEncoding.isValidString("\u00ed\u00bf\u00bf"));	// í¿¿
-
-		assertTrue(InternalEncoding.isValidString("\u00ee\u0080\u0080"));
-		assertTrue(InternalEncoding.isValidString("\u00f4\u008f\u00bf\u00bf"));
-		
-		//assertFalse(InternalEncoding.isValidString("\u00f4\u0090\u0080\u0080"));
-		assertTrue(InternalEncoding.isValidString("\u00f4\u0090\u0080\u0080"));	//	ô
-		#else
-		assertFalse(
-			try 
-				InternalEncoding.isValidString(String.fromCharCode(Unicode.minHighSurrogate)) 
-			catch (e:Any) 
-				false
-		);
-		assertFalse(
-			try 
-				InternalEncoding.isValidString(String.fromCharCode(Unicode.minLowSurrogate)) 
-			catch (e:Any) 
-				false
-		);
-		#end
+		/* "\xe3\x81" is an ill-formed UTF-8 sequence (missing a trailed code unit) */
+		assertFalse(InternalEncoding.isValidString("𩸽" + fromArrayOfBytes([0xe3, 0x81]) + "ëa"));
+		/* "\xc0" is an ill-formed UTF-8 sequence */
+		assertFalse(InternalEncoding.isValidString(fromArrayOfBytes([0xc0])));
+		/* "\xc0\xae" is a redundant UTF-8 sequence of "." U+002E FULL STOP (an ill-formed UTF-8 sequence) */
+		assertFalse(InternalEncoding.isValidString("/" + fromArrayOfBytes([0xc0, 0xae]) + "./"));
+		/* "\xed\x9f\xbf" is U+D7FF in UTF-8 (a well-formed UTF-8 sequence) */
+		assertTrue(InternalEncoding.isValidString(fromArrayOfBytes([0xed, 0x9f, 0xbf])));
+		/* "\xed\xa0\x80" is U+D800 in WTF-8 (an ill-formed UTF-8 sequence) */
+		assertFalse(InternalEncoding.isValidString(fromArrayOfBytes([0xed, 0xa0, 0x80])));
+		/* "\xed\xbf\xbf" is U+DFFF in WTF-8 (an ill-formed UTF-8 sequence) */
+		assertFalse(InternalEncoding.isValidString(fromArrayOfBytes([0xed, 0xbf, 0xbf])));
+		/* "\xee\x80\x80" is U+E000 in UTF-8 (a well-formed UTF-8 sequence) */
+		assertTrue(InternalEncoding.isValidString(fromArrayOfBytes([0xee, 0x80, 0x80])));
+		/* "\xf4\x8f\xbf\xbf" is U+10FFFF in UTF-8 (a well-formed UTF-8 sequence) */
+		assertTrue(InternalEncoding.isValidString(fromArrayOfBytes([0xf4, 0x8f, 0xbf, 0xbf])));
+		/* "\xf4\x90\x80\x80" is U+110000 in UTF-8, but out of Unicode, so now obsolete (an ill-formed UTF-8 sequence) */
+		assertFalse(InternalEncoding.isValidString(fromArrayOfBytes([0xf4, 0x90, 0x80, 0x80])));
+	#else
+		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
+		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minHighSurrogate)));
+		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minLowSurrogate)));
+	#end
 	}
 
 }
