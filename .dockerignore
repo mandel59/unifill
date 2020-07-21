@@ -1,0 +1,3 @@
+.git
+*.dockerfile
+run-test-on-docker.sh
