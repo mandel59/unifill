@@ -31,8 +31,17 @@ class TestInternalEncoding extends haxe.unit.TestCase {
 	public function test_isValidString() {
 	#if (python || target.utf16)
 		assertTrue(InternalEncoding.isValidString("𩸽あëa"));
-		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minHighSurrogate)));
-		assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minLowSurrogate)));
+		#if (!cs)
+			// String.fromCharCode of cs checks if
+			// the given char code is a valid unicode
+			// scalar value, so these lines are ignored.
+			assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minHighSurrogate)));
+			assertFalse(InternalEncoding.isValidString(String.fromCharCode(Unicode.minLowSurrogate)));
+		#end
+		#if (target.utf16)
+			assertFalse(InternalEncoding.isValidString("𩸽".substr(0, 1)));
+			assertFalse(InternalEncoding.isValidString("𩸽".substr(1, 1)));
+		#end
 	#else
 		function fromArrayOfBytes(a : Array<Int>) {
 			var bytes = haxe.io.Bytes.alloc(a.length);
