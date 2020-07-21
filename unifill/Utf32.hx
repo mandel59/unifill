@@ -80,7 +80,7 @@ abstract Utf32(String) {
 	}
 
 	public function validate() : Void {
-	#if python
+	#if (python || target.utf16)
 		// Check if all code points are valid Unicode scalar values.
 		var i = 0;
 		var len = this.length;
