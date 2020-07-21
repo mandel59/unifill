@@ -22,6 +22,10 @@ ADD https://deb.nodesource.com/setup_14.x /opt/setup_node_14.x
 
 RUN bash /opt/setup_node_14.x && apt-get install -y nodejs
 
+RUN apt-get update && apt-get install -y g++
+
+RUN haxelib install hxcpp
+
 ADD . /opt/unifill
 
 WORKDIR /opt/unifill

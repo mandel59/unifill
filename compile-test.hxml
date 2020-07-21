@@ -29,11 +29,11 @@
 #--next
 #-java test/test_java
 #-cmd java -jar test/test_java/Main.jar
-#
-#--next
-#-cpp test/test_cpp
-#-cmd test/test_cpp/Main
-#
+
+--next
+-cpp test/test_cpp
+-cmd test/test_cpp/Main
+
 #--next
 #-cs test/test_cs
 #-cmd mono test/test_cs/bin/Main.exe
