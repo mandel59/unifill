@@ -80,6 +80,8 @@ abstract Utf32(String) {
 	}
 
 	public function validate() : Void {
+	#if python
+		// Check if all code points are valid Unicode scalar values.
 		var i = 0;
 		var len = this.length;
 		for (i in 0 ... len) {
@@ -87,6 +89,12 @@ abstract Utf32(String) {
 				throw new Exception.InvalidCodeUnitSequence(i);
 			}
 		}
+	#else
+		// In case of lua, php and eval, Strings mimic fixed-width encoding (like UTF-32),
+		// but they are internally UTF-8.
+		// Here Utf8#validate is used instead.
+		Utf8.fromBytes(haxe.io.Bytes.ofString(this)).validate();
+	#end
 	}
 
 	@:op(A + B)
