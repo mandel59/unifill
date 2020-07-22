@@ -12,7 +12,7 @@ class InternalEncoding {
 	public static var internalEncoding(get, never) : String;
 
 	static inline function get_internalEncoding() : String
-	#if (!target.unicode)
+	#if (!target.unicode || lua)
 		return "UTF-8";
 	#elseif (target.utf16)
 		return "UTF-16";
@@ -123,6 +123,28 @@ class InternalEncoding {
 
 	public static inline function encodeWith(f : Int -> Void, c : Int) : Void {
 		UtfX.encodeWith(f, c);
+	}
+
+	public static inline function length(s : String) : Int {
+		return UtfX.fromString(s).length;
+	}
+
+	public static #if (!lua) inline #end function substring(s : String, si: Int, ei: Int) : String {
+	#if lua
+		if (si < 0) si = 0;
+		if (ei < 0) ei = 0;
+		if (si > ei) {
+			var t = si;
+			si = ei;
+			ei = t;
+		}
+		var len = InternalEncoding.length(s);
+		if (si > len) return "";
+		if (ei > len) ei = len;
+		return UtfX.fromString(s).substr(si, ei - si).toString();
+	#else
+		return s.substring(si, ei);
+	#end
 	}
 
 }

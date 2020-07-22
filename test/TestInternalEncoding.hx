@@ -6,11 +6,11 @@ import unifill.InternalEncoding;
 class TestInternalEncoding extends haxe.unit.TestCase {
 
 	public function test_codePointWidthAt() {
-		assertEquals(#if (target.unicode) 1 #else 2 #end, InternalEncoding.codePointWidthAt("эюя", 0));
+		assertEquals(#if (!target.unicode || lua) 2 #else 1 #end, InternalEncoding.codePointWidthAt("эюя", 0));
 	}
 
 	public function test_charAt() {
-		assertEquals(#if (target.unicode) "я" #else "ю" #end, InternalEncoding.charAt("эюя", 2));
+		assertEquals(#if (!target.unicode || lua) "ю" #else "я" #end, InternalEncoding.charAt("эюя", 2));
 	}
 
 	public  function test_charAtCodePoint() {

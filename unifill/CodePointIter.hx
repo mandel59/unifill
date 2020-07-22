@@ -9,7 +9,7 @@ class CodePointIter {
 	public inline function new(s : String) {
 		string = s;
 		index = 0;
-		endIndex = s.length;
+		endIndex = InternalEncoding.length(s);
 	}
 
 	public inline function hasNext() : Bool {

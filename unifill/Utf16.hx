@@ -314,7 +314,7 @@ private abstract StringU16(Array<Int>) {
 	public static function fromString(s : String) : StringU16 {
 		var buf = new StringU16Buffer();
 		var addUnit = buf.addUnit;
-		for (i in new InternalEncodingIter(s, 0, s.length)) {
+		for (i in new InternalEncodingIter(s, 0, InternalEncoding.length(s))) {
 			var c = InternalEncoding.codePointAt(s, i);
 			Utf16Impl.encode_code_point(addUnit, c);
 		}

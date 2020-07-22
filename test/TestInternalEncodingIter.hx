@@ -1,13 +1,14 @@
 package test;
 
+import unifill.InternalEncoding;
 import unifill.InternalEncodingIter;
 
 class TestInternalEncodingIter extends haxe.unit.TestCase {
 
 	public function test_InternalEncodingIter() {
 		var s = "𩸽あëa";
-		var itr = new InternalEncodingIter(s, 0, s.length);
-	#if (!target.unicode)
+		var itr = new InternalEncodingIter(s, 0, InternalEncoding.length(s));
+	#if (!target.unicode || lua)
 		var index = [0, 4, 7, 9, 10];
 	#elseif (target.utf16)
 		var index = [0, 2, 3, 4, 5];

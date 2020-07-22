@@ -173,11 +173,11 @@ abstract Utf8(StringU8) {
 
 private class Utf8Impl {
 
-	public static inline function code_point_width(c : Int) : Int {
+	public static function code_point_width(c : Int) : Int {
 		return (c < 0xC0) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : (c < 0xF8) ? 4 : 1;
 	}
 
-	public static inline function find_prev_code_point(accessor : Int -> Int, index : Int) : Int {
+	public static function find_prev_code_point(accessor : Int -> Int, index : Int) : Int {
 		var c1 = accessor(index - 1);
 		return (c1 < 0x80 || c1 >= 0xC0) ? 1
 			: (accessor(index - 2) & 0xE0 == 0xC0) ? 2
@@ -186,7 +186,7 @@ private class Utf8Impl {
 			: 1;
 	}
 
-	public static inline function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
+	public static function encode_code_point(addUnit : Int -> Void, codePoint : Int) : Void {
 		if (codePoint <= 0x7F) {
 			addUnit(codePoint);
 		} else if (codePoint <= 0x7FF) {
@@ -256,7 +256,7 @@ private class Utf8Impl {
 
 #if (!target.unicode)
 
-@:forward private abstract StringU8(String) {
+private abstract StringU8(String) {
 
 	public static inline function fromString(s : String) : StringU8 {
 		return new StringU8(s);
@@ -294,6 +294,50 @@ private class Utf8Impl {
 
 	inline function get_length() : Int {
 		return this.length;
+	}
+
+}
+
+#elseif lua
+
+private abstract StringU8(String) {
+
+	public static inline function fromString(s : String) : StringU8 {
+		return new StringU8(s);
+	}
+
+	public static inline function ofBytes(b : Bytes) : StringU8 {
+		return new StringU8(b.toString());
+	}
+
+	public static inline function fromBytes(b : Bytes) : StringU8 {
+		return new StringU8(b.toString());
+	}
+
+	public var length(get, never) : Int;
+
+	public inline function codeUnitAt(index : Int) : Int {
+		return lua.NativeStringTools.byte(this, index + 1);
+	}
+
+	public inline function substr(index : Int, ?len : Int) : StringU8 {
+		return new StringU8(lua.NativeStringTools.sub(this, index + 1, index + len).match);
+	}
+
+	public inline function toString() : String {
+		return this;
+	}
+
+	public inline function toBytes() : Bytes {
+		return Bytes.ofString(this);
+	}
+
+	inline function new(s : String) {
+		this = s;
+	}
+
+	inline function get_length() : Int {
+		return lua.NativeStringTools.len(this);
 	}
 
 }

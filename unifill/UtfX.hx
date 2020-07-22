@@ -1,6 +1,6 @@
 package unifill;
 
-#if (!target.unicode)
+#if (!target.unicode || lua)
 	typedef UtfX = Utf8;
 #elseif (target.utf16)
 	typedef UtfX = Utf16;

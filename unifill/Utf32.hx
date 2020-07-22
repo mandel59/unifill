@@ -1,6 +1,6 @@
 package unifill;
 
-#if (target.unicode && !target.utf16)
+#if (!(!target.unicode || lua || target.utf16))
 
 /**
 	 Utf32 provides a UTF-32-encoded string.
@@ -130,6 +130,10 @@ abstract Utf32(String) {
 		this = s;
 	}
 
+	public inline function substr(index : Int, len : Int) {
+		return new Utf32(this.substr(index, len));
+	}
+
 }
 
 #else
@@ -147,8 +151,8 @@ abstract Utf32(Array<Int>) {
 		return fromArray([for (c in codePoints) c]);
 	}
 
-	public static inline function fromString(string : String) : Utf32 {
-		var u = [for (c in new InternalEncodingIter(string, 0, string.length)) InternalEncoding.codePointAt(string, c)];
+	public static inline function fromString(s : String) : Utf32 {
+		var u = [for (c in new InternalEncodingIter(s, 0, InternalEncoding.length(s))) InternalEncoding.codePointAt(s, c)];
 		return new Utf32(u);
 	}
 
@@ -248,6 +252,10 @@ abstract Utf32(Array<Int>) {
 
 	inline function new(a : Array<Int>) {
 		this = a;
+	}
+
+	public inline function substr(index : Int, len : Int) {
+		return new Utf32(this.slice(index, index + len));
 	}
 
 }
