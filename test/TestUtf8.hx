@@ -45,7 +45,7 @@ class TestUtf8 extends haxe.unit.TestCase {
 			try {
 				var s = Utf8.fromBytes(b); // some targets natively implement proper check and throw exceptions here
 				s.validate();
-			} catch (e : Exception) {
+			} catch (e) {
 				return false;
 			}
 			return true;
